@@ -23,8 +23,8 @@ export default function PengujiSidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 left-0 z-50">
-      <div className="h-16 flex items-center px-6 border-b border-slate-100">
+    <aside className="w-64 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 left-0 z-50 h-screen">
+      <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
         <div className="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600 mr-3">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -36,7 +36,7 @@ export default function PengujiSidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 px-4 py-6 overflow-y-auto space-y-1">
+      <nav className="flex-1 px-4 py-4 overflow-y-auto space-y-1 min-h-0">
         {navItems.map((item, idx) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;

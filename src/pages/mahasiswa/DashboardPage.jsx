@@ -24,15 +24,26 @@ export default function MahasiswaDashboard() {
 
   const currentSchedule = activeSchedules.length > 0 ? activeSchedules[0] : null;
 
+  const sortedRegs = [...registrations].sort((a, b) => new Date(b.tanggalDaftar) - new Date(a.tanggalDaftar));
+  const activeReg = sortedRegs[0];
+  
+  // isProses: ada pendaftaran aktif yang belum selesai/dikembalikan/lulus
+  // AND tidak punya jadwal yang sudah selesai (statusKaprodi: 'selesai')
+  const activeRegSchedule = activeReg ? schedules.find(s => s.registrationId === activeReg.id) : null;
+  const isProses = activeReg 
+    && activeReg.statusVerifikasi !== 'lulus' 
+    && activeReg.statusVerifikasi !== 'dikembalikan'
+    && activeRegSchedule?.statusKaprodi !== 'selesai';
+  const isLulusTotal = student.statusUjian === 'lulus';
+
   // Tentukan Status Akademik Mahasiswa
   const getStatusAkademikLabel = () => {
-    if (student.statusUjian === 'lulus') {
+    if (isLulusTotal) {
       return { label: 'Telah Lulus (Alumni)', color: 'bg-amber-400 text-amber-900 border-amber-400', icon: '🎓' };
     }
     
     // Cek jika sedang ada pendaftaran aktif yang belum selesai
-    const activeReg = [...registrations].sort((a, b) => new Date(b.tanggalDaftar) - new Date(a.tanggalDaftar))[0];
-    if (activeReg && activeReg.statusVerifikasi !== 'lulus' && activeReg.statusVerifikasi !== 'dikembalikan') {
+    if (isProses) {
       return { 
          label: `Sedang Proses ${SidanusDB.getExamLabel(activeReg.jenisUjian)}`, 
          color: 'bg-blue-400/30 text-blue-50 border-blue-400/50 shadow-[0_0_10px_rgba(96,165,250,0.2)]',
@@ -85,12 +96,21 @@ export default function MahasiswaDashboard() {
             </div>
             
             <div className="mt-5 flex flex-wrap gap-2 relative z-10">
-              <Link to="/mahasiswa/daftar-ujian" className="inline-flex items-center gap-2 bg-white text-emerald-700 text-xs font-bold px-5 py-2.5 rounded-xl shadow hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Daftar Ujian Baru
-              </Link>
+              {!isProses && !isLulusTotal ? (
+                <Link to="/mahasiswa/daftar-ujian" className="inline-flex items-center gap-2 bg-white text-emerald-700 text-xs font-bold px-5 py-2.5 rounded-xl shadow hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Daftar Ujian Baru
+                </Link>
+              ) : (
+                <div className="inline-flex items-center gap-2 bg-emerald-800/40 text-emerald-100 border border-emerald-500/30 text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm cursor-not-allowed">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  {isLulusTotal ? 'Seluruh Ujian Selesai' : 'Pendaftaran Terkunci (Sedang Proses)'}
+                </div>
+              )}
             </div>
           </section>
 

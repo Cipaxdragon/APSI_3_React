@@ -13,6 +13,9 @@ export default function AdminDashboardPage() {
   const statDisetujui = registrations.filter(r => r.statusVerifikasi === 'disetujui').length;
   const statDikembalikan = registrations.filter(r => r.statusVerifikasi === 'dikembalikan').length;
 
+  // Modal tolak
+  const [rejectModal, setRejectModal] = useState({ open: false, regId: null, catatan: '' });
+
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('Semua Jenis Ujian');
   const [filterStatus, setFilterStatus] = useState('Semua Status');
@@ -31,8 +34,21 @@ export default function AdminDashboardPage() {
     return matchSearch && matchType && matchStatus;
   });
 
-  const handleVerify = (id, newStatus) => {
-    updateRegistration(id, { statusVerifikasi: newStatus });
+  const handleVerify = (id, newStatus, catatan = '') => {
+    updateRegistration(id, { statusVerifikasi: newStatus, catatanAdmin: catatan });
+  };
+
+  const handleTolak = (id) => {
+    setRejectModal({ open: true, regId: id, catatan: '' });
+  };
+
+  const handleTolakSubmit = () => {
+    if (!rejectModal.catatan.trim()) {
+      alert('Harap isi catatan alasan penolakan agar mahasiswa bisa memperbaiki berkasnya.');
+      return;
+    }
+    handleVerify(rejectModal.regId, 'dikembalikan', rejectModal.catatan);
+    setRejectModal({ open: false, regId: null, catatan: '' });
   };
 
   return (
@@ -40,6 +56,7 @@ export default function AdminDashboardPage() {
       <AdminSidebar />
       <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
         <PageHeader title="Verifikasi Berkas Pendaftaran" />
+        <RejectModal modal={rejectModal} setModal={setRejectModal} onSubmit={handleTolakSubmit} />
         
         <main className="flex-1 p-4 sm:p-6 space-y-6">
           {/* Stats */}
@@ -114,7 +131,7 @@ export default function AdminDashboardPage() {
                           {reg.statusVerifikasi === 'menunggu' ? (
                             <div className="flex justify-center gap-2">
                               <button onClick={() => handleVerify(reg.id, 'disetujui')} className="text-xs font-bold text-emerald-600 hover:underline">Setujui</button>
-                              <button onClick={() => handleVerify(reg.id, 'dikembalikan')} className="text-xs font-bold text-rose-600 hover:underline">Tolak</button>
+                              <button onClick={() => handleTolak(reg.id)} className="text-xs font-bold text-rose-600 hover:underline">Tolak</button>
                             </div>
                           ) : isDisetujui ? (
                             <Link to="/admin/penjadwalan" className="text-xs font-bold text-violet-600 hover:underline">📅 Jadwalkan</Link>
@@ -135,6 +152,34 @@ export default function AdminDashboardPage() {
             </div>
           </section>
         </main>
+      </div>
+    </div>
+  );
+}
+
+// Modal Penolakan
+function RejectModal({ modal, setModal, onSubmit }) {
+  if (!modal.open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+        <h3 className="font-bold text-slate-800 mb-1">Tolak & Kembalikan Berkas</h3>
+        <p className="text-xs text-slate-500 mb-4">Berikan catatan agar mahasiswa tahu apa yang perlu diperbaiki.</p>
+        <textarea
+          rows={4}
+          value={modal.catatan}
+          onChange={e => setModal(prev => ({ ...prev, catatan: e.target.value }))}
+          placeholder="Contoh: Kartu bimbingan belum ditandatangani pembimbing 2. Harap unggah ulang..."
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-rose-400"
+        />
+        <div className="flex gap-3 mt-4">
+          <button onClick={() => setModal({ open: false, regId: null, catatan: '' })} className="flex-1 border border-slate-200 text-slate-600 font-semibold rounded-xl py-2.5 text-sm hover:bg-slate-50">
+            Batal
+          </button>
+          <button onClick={onSubmit} className="flex-1 bg-rose-600 text-white font-bold rounded-xl py-2.5 text-sm hover:bg-rose-700">
+            Kirim Penolakan
+          </button>
+        </div>
       </div>
     </div>
   );

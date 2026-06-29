@@ -7,8 +7,7 @@ import { useRegistrations } from '../../hooks/useRegistrations';
 export default function PenjadwalanPage() {
   const { registrations } = useRegistrations();
   
-  // Mahasiswa yang sudah disetujui berkasnya tapi belum punya jadwal
-  const schedules = SidanusDB.getSchedules();
+  const [schedules, setSchedules] = useState(SidanusDB.getSchedules());
   
   const antrian = registrations.filter(reg => 
     reg.statusVerifikasi === 'disetujui' && 
@@ -46,8 +45,8 @@ export default function PenjadwalanPage() {
     alert('Jadwal berhasil diajukan ke Kaprodi!');
     setSelectedRegId('');
     setFormData({ tanggal: '', jamMulai: '', jamSelesai: '', ruangan: '', ketuaSidang: '', sekretaris: '', penguji1: '', penguji2: '', catatan: '' });
-    // Force re-render/reload state is handled by navigating or we can just let it filter out automatically
-    window.location.reload(); // simple refresh for prototype
+    // Refresh schedules from localStorage without page reload
+    setSchedules(SidanusDB.getSchedules());
   };
 
   const handleSelectStudent = (regId) => {

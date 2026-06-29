@@ -1,11 +1,7 @@
-
-// Since I haven't written the components yet, I will use placeholder elements.
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
-// Placeholders for now
 import LoginPage from './pages/LoginPage';
 import MahasiswaDashboard from './pages/mahasiswa/DashboardPage';
 import DaftarUjianPage from './pages/mahasiswa/DaftarUjianPage';
@@ -18,6 +14,7 @@ import KaprodiDashboard from './pages/kaprodi/DashboardPage';
 import PengujiDashboard from './pages/penguji/DashboardPage';
 import JadwalPublik from './pages/JadwalPublikPage';
 
+// Guard: cek apakah user sudah login dengan role yang benar
 const AuthGuard = ({ role }) => {
   const { session } = useAuth();
   if (!session || session.role !== role) {
@@ -26,20 +23,35 @@ const AuthGuard = ({ role }) => {
   return <Outlet />;
 };
 
+// Guard: jika sudah login, redirect langsung ke dashboard-nya
+const GuestGuard = () => {
+  const { session } = useAuth();
+  if (session?.role) {
+    return <Navigate to={`/${session.role}/dashboard`} replace />;
+  }
+  return <LoginPage />;
+};
+
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />`n        <Route path="/jadwal-publik" element={<JadwalPublik />} />
-        
+        <Route path="/" element={<GuestGuard />} />
+        <Route path="/jadwal-publik" element={<JadwalPublik />} />
+
         {/* Mahasiswa Routes */}
         <Route element={<AuthGuard role="mahasiswa" />}>
-          <Route path="/mahasiswa/dashboard" element={<MahasiswaDashboard />} />`n          <Route path="/mahasiswa/daftar-ujian" element={<DaftarUjianPage />} />`n          <Route path="/mahasiswa/notifikasi" element={<NotifikasiPage />} />`n          <Route path="/mahasiswa/profil" element={<ProfilPage />} />`n          <Route path="/mahasiswa/sk-kelulusan" element={<SKKelulusanPage />} />
+          <Route path="/mahasiswa/dashboard" element={<MahasiswaDashboard />} />
+          <Route path="/mahasiswa/daftar-ujian" element={<DaftarUjianPage />} />
+          <Route path="/mahasiswa/notifikasi" element={<NotifikasiPage />} />
+          <Route path="/mahasiswa/profil" element={<ProfilPage />} />
+          <Route path="/mahasiswa/sk-kelulusan" element={<SKKelulusanPage />} />
         </Route>
 
         {/* Admin Routes */}
         <Route element={<AuthGuard role="admin" />}>
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />`n          <Route path="/admin/penjadwalan" element={<AdminPenjadwalan />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/penjadwalan" element={<AdminPenjadwalan />} />
         </Route>
 
         {/* Kaprodi Routes */}
@@ -52,7 +64,7 @@ function App() {
           <Route path="/penguji/dashboard" element={<PengujiDashboard />} />
         </Route>
 
-        {/* Other Routes */}
+        {/* Catch all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
@@ -60,15 +72,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-

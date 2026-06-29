@@ -10,7 +10,7 @@ export default function DaftarUjianPage() {
   const { session } = useAuth();
   const navigate = useNavigate();
   const student = SidanusDB.getStudent(session?.identifier);
-  const { addRegistration } = useRegistrations(student?.nim);
+  const { addRegistration, registrations } = useRegistrations(student?.nim);
   
   const nextExamType = SidanusDB.getNextExamType(student?.nim);
   const [jenisUjian, setJenisUjian] = useState(nextExamType || '');
@@ -27,21 +27,59 @@ export default function DaftarUjianPage() {
 
   if (!student) return null;
 
+  // Guard: sudah lulus semua ujian
+  if (student.statusUjian === 'lulus') {
+    return (
+      <div className="flex bg-slate-50 min-h-screen">
+        <MahasiswaSidebar />
+        <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
+          <PageHeader title="Pendaftaran Ujian" />
+          <main className="flex-1 p-6 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-5xl mb-4">🎓</div>
+              <h2 className="text-xl font-bold text-slate-800 mb-2">Selamat! Anda Telah Lulus</h2>
+              <p className="text-slate-500 text-sm mb-6">Seluruh tahap ujian akademik Anda telah selesai.</p>
+              <button onClick={() => navigate('/mahasiswa/dashboard')} className="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700">Kembali ke Dashboard</button>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  // Guard: ada pendaftaran aktif yang sedang diproses
+  const activeReg = registrations.find(r => r.statusVerifikasi !== 'lulus' && r.statusVerifikasi !== 'dikembalikan');
+  if (activeReg) {
+    return (
+      <div className="flex bg-slate-50 min-h-screen">
+        <MahasiswaSidebar />
+        <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
+          <PageHeader title="Pendaftaran Ujian" />
+          <main className="flex-1 p-6 flex items-center justify-center">
+            <div className="text-center max-w-sm">
+              <div className="text-5xl mb-4">⏳</div>
+              <h2 className="text-xl font-bold text-slate-800 mb-2">Pendaftaran Sedang Diproses</h2>
+              <p className="text-slate-500 text-sm mb-2">Anda masih memiliki pendaftaran <strong>{SidanusDB.getExamLabel(activeReg.jenisUjian)}</strong> yang sedang berjalan.</p>
+              <p className="text-slate-400 text-xs mb-6">Pendaftaran baru tidak bisa dibuat hingga proses saat ini selesai.</p>
+              <button onClick={() => navigate('/mahasiswa/dashboard')} className="bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-emerald-700">Cek Status di Dashboard</button>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!jenisUjian) return alert('Tidak ada ujian yang bisa didaftarkan.');
     if (!agreed1 || !agreed2) return alert('Silakan centang semua konfirmasi');
 
-    // Buat data pendaftaran dummy
     addRegistration({
       nim: student.nim,
       jenisUjian,
-      berkas: {
-        dummy_file: true
-      }
+      berkas: { dummy_file: true }
     });
 
-    // Update judul mahasiswa
     if (judul !== student.judul) {
       SidanusDB.updateStudent(student.nim, { judul });
     }
