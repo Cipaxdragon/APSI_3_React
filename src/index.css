@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-200 selection:text-brand-900;
+  }
+}
+
+@layer components {
+  /* Input fields */
+  .input-style {
+    @apply w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all;
+  }
+
+  .input-style:focus {
+    @apply bg-white;
+  }
+
+  .input-style::placeholder {
+    @apply text-slate-400 font-normal;
+  }
+  
+  .input-style:disabled, .input-style[readonly] {
+    @apply bg-slate-100/70 text-slate-500 cursor-not-allowed border-slate-200/80;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-brand-600 hover:bg-brand-700 text-white shadow-brand-600/30 active:scale-[0.98] transition-all;
+  }
+}
+/* -- Background Pattern (Login) ------------------------------- */
+.bg-pattern {
+  background-color: #064e3b;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(16,185,129,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(52,211,153,0.10) 0%, transparent 40%),
+    radial-gradient(circle at 60% 80%, rgba(6,95,70,0.30)   0%, transparent 50%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.input-field-login {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-field-login:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  outline: none;
+}
+
+.btn-primary-login {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-primary-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(5, 150, 105, 0.4);
+}
+
+.demo-badge-login {
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.demo-badge-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.float-anim {
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}

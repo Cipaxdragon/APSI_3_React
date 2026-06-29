@@ -1,0 +1,189 @@
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { SidanusDB } from '../db/sidanusDB';
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  
+  const [role, setRole] = useState('mahasiswa');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (!role) {
+      alert('Silakan pilih role terlebih dahulu.');
+      return;
+    }
+
+    if (role === 'mahasiswa') {
+      const nim = username || '60900121034';
+      const student = SidanusDB.getStudent(nim);
+      if (!student) {
+        const allNims = SidanusDB.getStudents().map(s => `• ${s.nim} (${s.nama})`).join('\n');
+        alert('NIM tidak ditemukan. Gunakan salah satu NIM berikut:\n' + allNims);
+        return;
+      }
+      login('mahasiswa', nim);
+      navigate('/mahasiswa/dashboard');
+    } else {
+      login(role, username || role);
+      navigate(`/${role}/dashboard`);
+    }
+  };
+
+  const handleDemoLogin = (demoRole) => {
+    const identifier = demoRole === 'mahasiswa' ? '60900121034' : demoRole;
+    login(demoRole, identifier);
+    navigate(`/${demoRole}/dashboard`);
+  };
+
+  return (
+    <div className="bg-pattern min-h-screen flex items-center justify-center p-4 font-sans relative">
+      {/* Decorative blobs */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400 opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-300 opacity-10 rounded-full blur-3xl"></div>
+      </div>
+      
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo & Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-2xl mb-4 float-anim">
+            <svg className="w-11 h-11 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">SIDANUS</h1>
+          <p className="text-emerald-200 text-sm mt-1 font-medium">Sistem Pendaftaran Ujian · Jurusan Sistem Informasi</p>
+          <p className="text-emerald-300/70 text-xs mt-0.5">UIN Alauddin Makassar</p>
+        </div>
+
+        {/* Login Card */}
+        <div className="glass-card rounded-3xl shadow-2xl p-8">
+          <h2 className="text-2xl font-bold text-slate-800 mb-1">Selamat Datang</h2>
+          <p className="text-slate-500 text-sm mb-8">Silakan masuk untuk melanjutkan ke portal akademik.</p>
+          
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Role selector */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="role">Masuk sebagai</label>
+              <div className="relative">
+                <select 
+                  id="role" 
+                  value={role} 
+                  onChange={e => setRole(e.target.value)}
+                  className="input-field-login w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-700 appearance-none pr-10 text-sm font-medium"
+                >
+                  <option value="mahasiswa">Mahasiswa</option>
+                  <option value="admin">Admin Program Studi</option>
+                  <option value="kaprodi">Ketua Program Studi</option>
+                  <option value="penguji">Dosen Penguji</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Username */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="username">Username / NIM / NIDN</label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-3 flex items-center">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </span>
+                <input 
+                  id="username" 
+                  type="text" 
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  placeholder="Masukkan username Anda"
+                  className="input-field-login w-full border border-slate-200 bg-slate-50 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-700" 
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="password">Kata Sandi</label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-3 flex items-center">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </span>
+                <input 
+                  id="password" 
+                  type="password" 
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="input-field-login w-full border border-slate-200 bg-slate-50 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-700" 
+                />
+              </div> 
+              <div className="flex justify-end mt-2">
+                <a href="#" className="text-xs text-brand-600 font-medium hover:underline">Lupa kata sandi?</a>
+              </div>
+            </div>
+
+            <button type="submit" className="btn-primary-login w-full text-white font-semibold rounded-xl py-3.5 text-sm tracking-wide shadow-lg">
+              Masuk ke Portal
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-slate-100"></div>
+            <span className="text-xs text-slate-400 font-medium">Demo Cepat</span>
+            <div className="flex-1 h-px bg-slate-100"></div>
+          </div>
+
+          {/* Demo Login Shortcuts */}
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <button onClick={() => handleDemoLogin('mahasiswa')} className="demo-badge-login flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-xl text-brand-700 text-xs font-semibold hover:bg-brand-100">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6" />
+              </svg>
+              Mahasiswa
+            </button>
+            <button onClick={() => handleDemoLogin('admin')} className="demo-badge-login flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-50 border border-blue-100 rounded-xl text-blue-700 text-xs font-semibold hover:bg-blue-100">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              Admin Prodi
+            </button>
+            <button onClick={() => handleDemoLogin('kaprodi')} className="demo-badge-login flex items-center justify-center gap-2 px-3 py-2.5 bg-amber-50 border border-amber-100 rounded-xl text-amber-700 text-xs font-semibold hover:bg-amber-100">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              Kaprodi
+            </button>
+            <button onClick={() => handleDemoLogin('penguji')} className="demo-badge-login col-span-2 sm:col-span-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-rose-50 border border-rose-100 rounded-xl text-rose-700 text-xs font-semibold hover:bg-rose-100">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              Penguji
+            </button>
+          </div>
+
+          {/* Public Schedule Link */}
+          <div className="mt-5 text-center border-t border-slate-100 pt-5">
+            <Link to="/jadwal-publik" className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-emerald-600 transition-colors font-medium">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Lihat Jadwal Ujian
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
