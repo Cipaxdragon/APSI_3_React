@@ -24,6 +24,31 @@ export default function PengujiDashboardPage() {
      sch.penguji2.includes(pengujiName))
   );
 
+  const handleInputNilai = (sch) => {
+    if(!window.confirm('Simulasi: Tandai ujian ini telah selesai dan lulus?')) return;
+
+    const student = SidanusDB.getStudent(sch.nim);
+    if (!student) return;
+
+    // Update status ujian mahasiswa
+    const newStatus = sch.jenisUjian === 'proposal' ? 'proposal_selesai' 
+                    : sch.jenisUjian === 'hasil' ? 'hasil_selesai' 
+                    : 'lulus';
+
+    SidanusDB.updateStudent(sch.nim, { statusUjian: newStatus });
+    
+    // Update status pendaftaran menjadi selesai agar timeline di mahasiswa reset
+    if (sch.registrationId) {
+      SidanusDB.updateRegistration(sch.registrationId, { statusVerifikasi: 'lulus' });
+    }
+    
+    // Sembunyikan jadwal dari dashboard karena sudah selesai
+    SidanusDB.updateSchedule(sch.id, { statusKaprodi: 'selesai' });
+
+    alert(`Berhasil! Ujian ${SidanusDB.getExamLabel(sch.jenisUjian)} untuk ${student.nama} telah dinyatakan Selesai/Lulus.`);
+    window.location.reload();
+  };
+
   return (
     <div className="flex bg-slate-50 min-h-screen">
       <PengujiSidebar />
@@ -87,8 +112,8 @@ export default function PengujiDashboardPage() {
                           </span>
                         </td>
                         <td className="px-5 py-4 text-center">
-                          <button className="text-xs font-bold text-white bg-rose-600 px-4 py-2 rounded-lg shadow-sm hover:bg-rose-700 transition-colors w-full">
-                            Input Nilai
+                          <button onClick={() => handleInputNilai(sch)} className="text-xs font-bold text-white bg-rose-600 px-4 py-2 rounded-lg shadow-sm hover:bg-rose-700 transition-colors w-full">
+                            Tandai Lulus / Nilai
                           </button>
                           <button className="text-xs font-bold text-slate-600 bg-slate-100 px-4 py-2 rounded-lg shadow-sm hover:bg-slate-200 transition-colors mt-2 w-full">
                             Lihat Draft
