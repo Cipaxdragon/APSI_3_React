@@ -10,6 +10,7 @@ import ProfilPage from './pages/mahasiswa/ProfilPage';
 import SKKelulusanPage from './pages/mahasiswa/SKKelulusanPage';
 import AdminDashboard from './pages/admin/DashboardPage';
 import AdminPenjadwalan from './pages/admin/PenjadwalanPage';
+import AdminDatabase from './pages/admin/DatabasePage';
 import KaprodiDashboard from './pages/kaprodi/DashboardPage';
 import PengujiDashboard from './pages/penguji/DashboardPage';
 import JadwalPublik from './pages/JadwalPublikPage';
@@ -52,6 +53,7 @@ function App() {
         <Route element={<AuthGuard role="admin" />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/penjadwalan" element={<AdminPenjadwalan />} />
+          <Route path="/admin/database" element={<AdminDatabase />} />
         </Route>
 
         {/* Kaprodi Routes */}

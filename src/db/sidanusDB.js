@@ -9,6 +9,8 @@ const KEYS = {
   STUDENTS: 'sidanus_students',
   REGISTRATIONS: 'sidanus_registrations',
   SCHEDULES: 'sidanus_schedules',
+  DOSEN: 'sidanus_dosen',
+  RUANGAN: 'sidanus_ruangan',
 };
 
 const SEED_STUDENTS = [
@@ -113,7 +115,7 @@ const SEED_REGISTRATIONS = [
 ];
 
 // ─── Master Data ─────────────────────────────────────
-const DOSEN_LIST = [
+const SEED_DOSEN = [
   { id: 'D001', nama: 'Dr. Andi Sumarni, S.T., M.Kom.', jabatan: 'Lektor Kepala' },
   { id: 'D002', nama: 'Andi Muhammad Ansar, S.Kom., M.T.', jabatan: 'Lektor' },
   { id: 'D003', nama: 'Faisal Akib, S.Kom., M.Kom.', jabatan: 'Lektor' },
@@ -125,7 +127,7 @@ const DOSEN_LIST = [
   { id: 'D009', nama: 'Gunawan, S.Kom., M.Kom.', jabatan: 'Asisten Ahli' },
 ];
 
-const RUANGAN_LIST = [
+const SEED_RUANGAN = [
   { id: 'R001', nama: 'Ruang Seminar Lt. 3, Gedung A', kapasitas: 30 },
   { id: 'R002', nama: 'Ruang Seminar Lt. 2, Gedung B', kapasitas: 25 },
   { id: 'R003', nama: 'Aula Jurusan Sistem Informasi', kapasitas: 50 },
@@ -160,6 +162,10 @@ function init() {
     localStorage.setItem(KEYS.REGISTRATIONS, JSON.stringify(SEED_REGISTRATIONS));
   if (!localStorage.getItem(KEYS.SCHEDULES))
     localStorage.setItem(KEYS.SCHEDULES, JSON.stringify(SEED_SCHEDULES));
+  if (!localStorage.getItem(KEYS.DOSEN))
+    localStorage.setItem(KEYS.DOSEN, JSON.stringify(SEED_DOSEN));
+  if (!localStorage.getItem(KEYS.RUANGAN))
+    localStorage.setItem(KEYS.RUANGAN, JSON.stringify(SEED_RUANGAN));
 }
 
 function resetAll() {
@@ -187,11 +193,26 @@ function getStudents() {
 function getStudent(nim) {
   return getStudents().find(s => s.nim === nim) || null;
 }
+function addStudent(student) {
+  const students = getStudents();
+  if (students.find(s => s.nim === student.nim)) return false; // NIM exists
+  students.push({ ...student, statusUjian: 'belum' });
+  localStorage.setItem(KEYS.STUDENTS, JSON.stringify(students));
+  return true;
+}
 function updateStudent(nim, updates) {
   const students = getStudents();
   const idx = students.findIndex(s => s.nim === nim);
   if (idx === -1) return false;
   students[idx] = { ...students[idx], ...updates };
+  localStorage.setItem(KEYS.STUDENTS, JSON.stringify(students));
+  return true;
+}
+function deleteStudent(nim) {
+  let students = getStudents();
+  const initialLength = students.length;
+  students = students.filter(s => s.nim !== nim);
+  if (students.length === initialLength) return false;
   localStorage.setItem(KEYS.STUDENTS, JSON.stringify(students));
   return true;
 }
@@ -330,10 +351,55 @@ function getBerkasRequirements(jenisUjian) {
 
 // ─── Master Data Helpers ─────────────────────────────
 function getDosenList() {
-  return DOSEN_LIST;
+  const d = localStorage.getItem(KEYS.DOSEN);
+  return d ? JSON.parse(d) : [];
 }
+function addDosen(dosen) {
+  const list = getDosenList();
+  const newDosen = { ...dosen, id: 'D' + Date.now() };
+  list.push(newDosen);
+  localStorage.setItem(KEYS.DOSEN, JSON.stringify(list));
+  return newDosen;
+}
+function updateDosen(id, updates) {
+  const list = getDosenList();
+  const idx = list.findIndex(d => d.id === id);
+  if (idx === -1) return false;
+  list[idx] = { ...list[idx], ...updates };
+  localStorage.setItem(KEYS.DOSEN, JSON.stringify(list));
+  return true;
+}
+function deleteDosen(id) {
+  let list = getDosenList();
+  list = list.filter(d => d.id !== id);
+  localStorage.setItem(KEYS.DOSEN, JSON.stringify(list));
+  return true;
+}
+
 function getRuanganList() {
-  return RUANGAN_LIST;
+  const d = localStorage.getItem(KEYS.RUANGAN);
+  return d ? JSON.parse(d) : [];
+}
+function addRuangan(ruangan) {
+  const list = getRuanganList();
+  const newRuangan = { ...ruangan, id: 'R' + Date.now() };
+  list.push(newRuangan);
+  localStorage.setItem(KEYS.RUANGAN, JSON.stringify(list));
+  return newRuangan;
+}
+function updateRuangan(id, updates) {
+  const list = getRuanganList();
+  const idx = list.findIndex(r => r.id === id);
+  if (idx === -1) return false;
+  list[idx] = { ...list[idx], ...updates };
+  localStorage.setItem(KEYS.RUANGAN, JSON.stringify(list));
+  return true;
+}
+function deleteRuangan(id) {
+  let list = getRuanganList();
+  list = list.filter(r => r.id !== id);
+  localStorage.setItem(KEYS.RUANGAN, JSON.stringify(list));
+  return true;
 }
 
 // Hitung tanggal kerja H+N dari hari ini (skip Sabtu & Minggu)
@@ -368,13 +434,13 @@ function suggestSchedule(nim) {
   usedDosen.add(ketuaSidang);
   usedDosen.add(sekretaris);
 
-  // Cari penguji 1 & 2 dari DOSEN_LIST yang belum dipakai
-  const available = DOSEN_LIST
+  // Cari penguji 1 & 2 dari Dosen yang belum dipakai
+  const available = getDosenList()
     .map(d => d.nama)
     .filter(nama => !usedDosen.has(nama) && nama !== ketuaSidang && nama !== sekretaris);
 
   // Pilih ruangan pertama yang tersedia
-  const ruangan = RUANGAN_LIST[0]?.nama || 'Ruang Seminar Lt. 3, Gedung A';
+  const ruangan = getRuanganList()[0]?.nama || 'Ruang Seminar Lt. 3, Gedung A';
 
   return {
     tanggal: suggestedDate,
@@ -395,10 +461,12 @@ init();
 export const SidanusDB = {
   init, resetAll,
   setSession, getSession, clearSession,
-  getStudents, getStudent, updateStudent,
+  getStudents, getStudent, addStudent, updateStudent, deleteStudent,
   getRegistrations, getRegistration, getRegistrationsByNim,
   getRegistrationsByStatus, hasActiveRegistration, addRegistration, updateRegistration,
   getSchedules, getSchedulesByStatus, addSchedule, updateSchedule,
   getExamLabel, getStatusLabel, getStatusColor, formatDate, getNextExamType, getBerkasRequirements,
-  getDosenList, getRuanganList, suggestSchedule,
+  getDosenList, addDosen, updateDosen, deleteDosen, 
+  getRuanganList, addRuangan, updateRuangan, deleteRuangan, 
+  suggestSchedule,
 };

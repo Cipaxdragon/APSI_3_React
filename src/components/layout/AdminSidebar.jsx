@@ -19,7 +19,7 @@ export default function AdminSidebar() {
   const navItems = [
     { label: 'Dashboard Verifikasi', path: '/admin/dashboard', icon: Home },
     { label: 'Antrian Penjadwalan', path: '/admin/penjadwalan', icon: Calendar },
-    { label: 'Data Mahasiswa', path: '#', icon: Users },
+    { label: 'Master Database', path: '/admin/database', icon: Users },
     { label: 'Laporan', path: '#', icon: ClipboardList },
     { label: 'Pengaturan', path: '#', icon: Settings },
   ];
