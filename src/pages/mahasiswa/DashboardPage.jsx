@@ -156,7 +156,10 @@ function StatCard({ icon, color, count, label }) {
 }
 
 function Timeline({ student, registrations }) {
-  const activeReg = registrations.find(r => r.statusVerifikasi !== 'dikembalikan');
+  // Ambil pendaftaran terbaru
+  const sortedRegs = [...registrations].sort((a, b) => new Date(b.tanggalDaftar) - new Date(a.tanggalDaftar));
+  const activeReg = sortedRegs[0];
+
   if (!activeReg) {
     return (
       <div className="text-center py-10">
@@ -171,22 +174,33 @@ function Timeline({ student, registrations }) {
     );
   }
 
+  const isReturned = activeReg.statusVerifikasi === 'dikembalikan';
+  const isApproved = activeReg.statusVerifikasi === 'disetujui';
+
   const steps = [
-    { label: 'Kirim Berkas', status: 'done', desc: 'Berkas berhasil dikirim' },
-    { label: 'Verifikasi Admin', status: activeReg.statusVerifikasi === 'disetujui' ? 'done' : 'active', desc: activeReg.statusVerifikasi === 'disetujui' ? 'Disetujui Admin' : 'Sedang diverifikasi' },
+    { label: 'Kirim Berkas', status: 'done', desc: `Pendaftaran ${SidanusDB.getExamLabel(activeReg.jenisUjian)} dikirim` },
+    { 
+      label: 'Verifikasi Admin', 
+      status: isApproved ? 'done' : (isReturned ? 'error' : 'active'), 
+      desc: isApproved ? 'Disetujui Admin' : (isReturned ? 'Berkas Perlu Revisi' : 'Sedang diverifikasi') 
+    },
     { label: 'Penjadwalan', status: 'pending', desc: 'Menunggu plotting jadwal' },
     { label: 'Persetujuan Kaprodi', status: 'pending', desc: 'Menunggu SK Kaprodi' },
   ];
 
-  const schedule = SidanusDB.getSchedules().find(s => s.registrationId === activeReg.id);
-  if (schedule) {
-    steps[2].status = 'done'; steps[2].desc = 'Jadwal diusulkan';
-    if (schedule.statusKaprodi === 'disetujui') {
-      steps[3].status = 'done'; steps[3].desc = 'Disetujui Kaprodi';
-    } else if (schedule.statusKaprodi === 'ditolak') {
-      steps[3].status = 'error'; steps[3].desc = 'Ditolak Kaprodi';
-    } else {
-      steps[3].status = 'active'; steps[3].desc = 'Menunggu Kaprodi';
+  if (!isReturned) {
+    const schedule = SidanusDB.getSchedules().find(s => s.registrationId === activeReg.id);
+    if (schedule) {
+      steps[2].status = 'done'; steps[2].desc = 'Jadwal diusulkan';
+      if (schedule.statusKaprodi === 'disetujui') {
+        steps[3].status = 'done'; steps[3].desc = 'Disetujui Kaprodi';
+      } else if (schedule.statusKaprodi === 'ditolak') {
+        steps[3].status = 'error'; steps[3].desc = 'Ditolak Kaprodi';
+      } else {
+        steps[3].status = 'active'; steps[3].desc = 'Menunggu Kaprodi';
+      }
+    } else if (isApproved) {
+      steps[2].status = 'active';
     }
   }
 
@@ -197,7 +211,7 @@ function Timeline({ student, registrations }) {
         {steps.map((step, idx) => (
           <div key={idx} className="flex gap-4">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 z-10 bg-white
-              ${step.status === 'done' ? 'border-emerald-500' : step.status === 'active' ? 'border-blue-500 shadow-[0_0_0_4px_rgba(59,130,246,0.1)]' : step.status === 'error' ? 'border-rose-500' : 'border-slate-200'}`}>
+              ${step.status === 'done' ? 'border-emerald-500' : step.status === 'active' ? 'border-blue-500 shadow-[0_0_0_4px_rgba(59,130,246,0.1)]' : step.status === 'error' ? 'border-rose-500 shadow-[0_0_0_4px_rgba(244,63,94,0.1)]' : 'border-slate-200'}`}>
               {step.status === 'done' && <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>}
               {step.status === 'active' && <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>}
               {step.status === 'error' && <svg className="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>}
@@ -207,6 +221,12 @@ function Timeline({ student, registrations }) {
                 {step.label}
               </p>
               <p className="text-xs text-slate-500 mt-0.5">{step.desc}</p>
+              {step.status === 'error' && activeReg.catatanAdmin && idx === 1 && (
+                <div className="mt-2 bg-rose-50 border border-rose-100 rounded-lg p-3 text-xs text-rose-700">
+                  <span className="font-bold block mb-1">Catatan Admin:</span>
+                  {activeReg.catatanAdmin}
+                </div>
+              )}
             </div>
           </div>
         ))}
