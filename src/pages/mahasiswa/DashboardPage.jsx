@@ -14,11 +14,14 @@ export default function MahasiswaDashboard() {
   if (!student) return null;
 
   // Stat Counters
+  const schedules = SidanusDB.getSchedules();
+  const completedSchedules = schedules.filter(s => s.nim === student.nim && s.statusKaprodi === 'selesai');
+  const latestCompletedSchedule = completedSchedules.length > 0 ? [...completedSchedules].sort((a,b) => b.id.localeCompare(a.id))[0] : null;
+
   const statDikirim = registrations.length;
   const statDisetujui = registrations.filter(r => r.statusVerifikasi === 'disetujui').length;
-  const statRevisi = registrations.filter(r => r.statusVerifikasi === 'dikembalikan').length;
+  const statRevisi = registrations.filter(r => r.statusVerifikasi === 'dikembalikan').length + completedSchedules.filter(s => s.perluRevisi).length;
   
-  const schedules = SidanusDB.getSchedules();
   const activeSchedules = schedules.filter(s => s.nim === student.nim && s.statusKaprodi === 'disetujui');
   const statJadwal = activeSchedules.length;
 
@@ -184,11 +187,22 @@ export default function MahasiswaDashboard() {
                     </Link>
                   </div>
                 ) : student.statusUjian === 'hasil_selesai' ? (
-                  <p className="text-teal-600 font-bold text-sm text-center py-2">Telah Lulus Ujian Hasil</p>
+                  <p className="text-teal-600 font-bold text-sm py-2">Telah Lulus Ujian Hasil</p>
                 ) : student.statusUjian === 'proposal_selesai' ? (
-                  <p className="text-blue-600 font-bold text-sm text-center py-2">Telah Lulus Ujian Proposal</p>
+                  <p className="text-blue-600 font-bold text-sm py-2">Telah Lulus Ujian Proposal</p>
                 ) : (
-                  <p className="text-slate-400 text-sm text-center py-4">Belum ada pengumuman kelulusan.</p>
+                  <p className="text-slate-400 text-sm py-4">Belum ada pengumuman kelulusan.</p>
+                )}
+
+                {/* Tampilkan catatan revisi dari penguji jika ada di jadwal terakhir */}
+                {latestCompletedSchedule?.perluRevisi && latestCompletedSchedule.catatanPenguji && (
+                  <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <p className="text-xs font-bold text-amber-800 mb-2 flex items-center gap-1.5">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                      Catatan Revisi Penguji
+                    </p>
+                    <p className="text-sm text-amber-900 leading-relaxed italic">"{latestCompletedSchedule.catatanPenguji}"</p>
+                  </div>
                 )}
               </section>
             </div>

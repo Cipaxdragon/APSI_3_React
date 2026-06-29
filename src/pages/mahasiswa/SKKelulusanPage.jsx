@@ -19,7 +19,7 @@ export default function SKKelulusanPage() {
       <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
         <PageHeader title="SK Kelulusan" />
         
-        <main className="flex-1 p-4 sm:p-6 max-w-3xl">
+        <main className="flex-1 p-4 sm:p-6 max-w-3xl mx-auto w-full">
           {!isLulus ? (
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center">
               <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">

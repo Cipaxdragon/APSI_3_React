@@ -27,6 +27,8 @@ export default function DaftarUjianPage() {
   const [agreed2, setAgreed2] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState({});
   const [uploading, setUploading] = useState({});
+  const [openUploadIndex, setOpenUploadIndex] = useState(0);
+  const [dragActive, setDragActive] = useState(null);
 
   if (!student) return null;
 
@@ -129,6 +131,22 @@ export default function DaftarUjianPage() {
       delete updated[key];
       return updated;
     });
+  };
+
+  const handleAutoFill = () => {
+    const dummyBase64 = 'data:application/pdf;base64,JVBERi0xLjEKJcKlwrHDqwoKMSAwIG9iagogIDw8IC9UeXBlIC9DYXRhbG9nCiAgICAgL1BhZ2VzIDIgMCBSCiAgPj4KZW5kb2JqCgoyIDAgb2JqCiAgPDwgL1R5cGUgL1BhZ2VzCiAgICAgL0tpZHMgWzMgMCBSXQogICAgIC9Db3VudCAxCiAgICAgL01lZGlhQm94IFswIDAgMzAwIDE0NF0KICA+PgplbmRvYmoKCjMgMCBvYmoKICA8PCAgL1R5cGUgL1BhZ2UKICAgICAgL1BhcmVudCAyIDAgUgogICAgICAvUmVzb3VyY2VzCiAgICAgICA8PCAvRm9udAogICAgICAgICAgIDw8IC9GMQogICAgICAgICAgICAgICA8PCAvVHlwZSAvRm9udAogICAgICAgICAgICAgICAgICAvU3VidHlwZSAvVHlwZTEKICAgICAgICAgICAgICAgICAgL0Jhc2VGb250IC9UaW1lcy1Sb21hbgogICAgICAgICAgICAgICA+PgogICAgICAgICAgID4+CiAgICAgICA+PgogICAgICAvQ29udGVudHMgNCAwIFIKICA+PgplbmRvYmoKCjQgMCBvYmoKICA8PCAvTGVuZ3RoIDU1ID4+CnN0cmVhbQogIEJUCiAgICAvRjEgMTggVGYKICAgIDAgMCBUZAogICAgKER1bW15IFBERiBGaWxlKSBUagogIEVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDE4IDAwMDAwIG4gCjAwMDAwMDAwNzcgMDAwMDAgbiAKMDAwMDAwMDE3OCAwMDAwMCBuIAowMDAwMDAwNDU3IDAwMDAwIG4gCnRyYWlsZXIKICA8PCAgL1Jvb3QgMSAwIFIKICAgICAgL1NpemUgNQogID4+CnN0YXJ0eHJlZgo1NjUKJSVFT0YK';
+    
+    const filledFiles = {};
+    requirements.forEach(req => {
+      filledFiles[req.key] = {
+        name: `dummy_${req.key}.pdf`,
+        base64: dummyBase64,
+        size: 15360, // 15 KB
+        uploadedAt: new Date().toISOString()
+      };
+    });
+    setUploadedFiles(filledFiles);
+    setOpenUploadIndex(null); // Tutup semua accordion
   };
 
   const handleSubmit = (e) => {
@@ -243,19 +261,35 @@ export default function DaftarUjianPage() {
 
             {/* Seksi 4: Upload Berkas */}
             <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6">
-              <h2 className="font-bold text-slate-800 mb-1 flex items-center gap-2">
-                <span className="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center text-xs font-extrabold">4</span>
-                Upload Berkas Syarat — {SidanusDB.getExamLabel(jenisUjian)}
-              </h2>
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="font-bold text-slate-800 flex items-center gap-2">
+                  <span className="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center text-xs font-extrabold">4</span>
+                  Upload Berkas Syarat — {SidanusDB.getExamLabel(jenisUjian)}
+                </h2>
+                <button 
+                  type="button" 
+                  onClick={handleAutoFill}
+                  className="text-[10px] font-bold text-brand-700 bg-brand-100 hover:bg-brand-200 px-3 py-1.5 rounded-lg transition-colors border border-brand-200"
+                >
+                  ⚡ Auto-Fill (Demo)
+                </button>
+              </div>
               <p className="text-xs text-slate-500 mb-5 ml-9">Format: PDF · Maks. 1 MB per berkas · Semua berkas wajib diisi</p>
 
               <div className="space-y-3">
                 {requirements.map((req, idx) => {
                   const uploaded = uploadedFiles[req.key];
                   const isLoading = uploading[req.key];
+                  const isOpen = openUploadIndex === idx;
+                  const isDragActive = dragActive === req.key;
+
                   return (
-                    <div key={idx} className={`rounded-xl border transition-all ${uploaded ? 'border-emerald-200 bg-emerald-50/50' : 'border-slate-200 bg-white'}`}>
-                      <div className="flex items-center justify-between p-4">
+                    <div key={idx} className={`rounded-xl border transition-all overflow-hidden ${uploaded ? 'border-emerald-200' : isOpen ? 'border-brand-300 ring-4 ring-brand-500/10' : 'border-slate-200'} bg-white`}>
+                      {/* Header Accordion */}
+                      <div 
+                        onClick={() => setOpenUploadIndex(isOpen ? null : idx)}
+                        className={`flex items-center justify-between p-4 cursor-pointer transition-colors ${uploaded ? 'bg-emerald-50/50' : 'hover:bg-slate-50'}`}
+                      >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${uploaded ? 'bg-emerald-500' : 'bg-amber-400'}`}>
                             {uploaded ? (
@@ -264,48 +298,76 @@ export default function DaftarUjianPage() {
                               <span className="text-white text-xs font-bold">{idx + 1}</span>
                             )}
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-slate-700 truncate">{req.label}</p>
-                            {uploaded && (
-                              <p className="text-xs text-emerald-600 font-medium truncate">
-                                {uploaded.name} · {(uploaded.size / 1024).toFixed(1)} KB
-                              </p>
-                            )}
+                          <div className="min-w-0 flex-1">
+                            <p className={`text-sm font-semibold truncate ${uploaded ? 'text-emerald-800' : 'text-slate-700'}`}>{req.label}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                        <div className="flex items-center gap-3 ml-3 flex-shrink-0">
                           {uploaded ? (
-                            <>
-                              <a
-                                href={uploaded.base64}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
-                              >
-                                👁️ Lihat
-                              </a>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveFile(req.key)}
-                                className="text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors"
-                              >
-                                ✕ Hapus
-                              </button>
-                            </>
+                            <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full hidden sm:inline-block">Sudah Upload</span>
                           ) : (
-                            <label className={`text-xs font-semibold px-4 py-2 rounded-lg cursor-pointer transition-colors shadow-sm ${isLoading ? 'bg-slate-100 text-slate-400 cursor-wait' : 'text-emerald-700 bg-emerald-100 hover:bg-emerald-200'}`}>
-                              {isLoading ? '⏳ Membaca...' : '📎 Pilih PDF'}
-                              <input
-                                type="file"
-                                accept=".pdf,application/pdf"
-                                className="hidden"
-                                disabled={isLoading}
-                                onChange={e => handleFileChange(req.key, e.target.files[0])}
-                              />
-                            </label>
+                            <span className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full hidden sm:inline-block">Belum Upload</span>
                           )}
+                          <svg className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                          </svg>
                         </div>
                       </div>
+
+                      {/* Konten Dropzone */}
+                      {isOpen && (
+                        <div className="px-4 pb-4 pt-2 border-t border-slate-100 bg-slate-50/50">
+                          {uploaded ? (
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                              <div>
+                                <p className="text-sm font-bold text-slate-800 break-all">{uploaded.name}</p>
+                                <p className="text-xs text-slate-500 font-medium mt-1">Ukuran: {(uploaded.size / 1024).toFixed(1)} KB</p>
+                              </div>
+                              <div className="flex gap-2 w-full sm:w-auto">
+                                <a href={uploaded.base64} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none text-center text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors">👁️ Lihat File</a>
+                                <button type="button" onClick={() => handleRemoveFile(req.key)} className="flex-1 sm:flex-none text-center text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 px-4 py-2 rounded-lg transition-colors">✕ Hapus</button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div 
+                              className={`relative p-8 rounded-xl border-2 border-dashed transition-colors flex flex-col items-center justify-center text-center ${
+                                isDragActive ? 'border-brand-500 bg-brand-50' : 'border-slate-300 hover:border-brand-400 hover:bg-brand-50/30'
+                              } ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
+                              onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setDragActive(req.key); }}
+                              onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setDragActive(null); }}
+                              onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setDragActive(null);
+                                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                                  handleFileChange(req.key, e.dataTransfer.files[0]);
+                                }
+                              }}
+                            >
+                              <svg className={`w-10 h-10 mb-3 transition-colors ${isDragActive ? 'text-brand-500' : 'text-slate-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                              </svg>
+                              <p className="text-sm font-semibold text-slate-700 mb-1">{isLoading ? 'Mengunggah...' : 'Tarik & lepas file PDF di sini'}</p>
+                              <p className="text-xs text-slate-500 mb-4">atau klik tombol di bawah</p>
+                              <label className="btn-primary px-5 py-2 rounded-lg text-xs font-bold cursor-pointer inline-flex items-center gap-2">
+                                {isLoading ? '⏳ Memproses...' : 'Pilih File PDF'}
+                                <input
+                                  type="file"
+                                  accept=".pdf,application/pdf"
+                                  className="hidden"
+                                  disabled={isLoading}
+                                  onChange={e => {
+                                    if (e.target.files && e.target.files[0]) {
+                                      handleFileChange(req.key, e.target.files[0]);
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}

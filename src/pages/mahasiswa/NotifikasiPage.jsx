@@ -49,19 +49,40 @@ export default function NotifikasiPage() {
     }
     
     const schedule = SidanusDB.getSchedules().find(s => s.registrationId === reg.id);
-    if (schedule && schedule.statusKaprodi === 'disetujui') {
-      notifications.push({
-        id: `notif-sch-${schedule.id}`,
-        title: `Jadwal ${examLabel} Telah Rilis!`,
-        desc: `Jadwal ujian Anda telah ditetapkan pada ${SidanusDB.formatDate(schedule.tanggal)}. Cek detailnya di Dashboard.`,
-        type: 'success',
-        date: schedule.tanggal // fallback
-      });
+    if (schedule) {
+      if (schedule.statusKaprodi === 'disetujui' || schedule.statusKaprodi === 'selesai') {
+        notifications.push({
+          id: `notif-sch-${schedule.id}`,
+          title: `Jadwal ${examLabel} Ditetapkan`,
+          desc: `Jadwal ujian Anda telah ditetapkan pada ${SidanusDB.formatDate(schedule.tanggal)}.`,
+          type: 'success',
+          date: schedule.tanggal
+        });
+      }
+      if (schedule.statusKaprodi === 'selesai') {
+        if (schedule.perluRevisi) {
+          notifications.push({
+            id: `notif-rev-${schedule.id}`,
+            title: `Revisi Ujian ${examLabel}`,
+            desc: `Terdapat catatan revisi dari penguji: "${schedule.catatanPenguji}".`,
+            type: 'warning',
+            date: schedule.tanggalSelesai || schedule.tanggal
+          });
+        } else {
+          notifications.push({
+            id: `notif-pass-${schedule.id}`,
+            title: `Lulus Ujian ${examLabel} 🎉`,
+            desc: `Selamat! Anda telah dinyatakan lulus untuk ujian ini.`,
+            type: 'success',
+            date: schedule.tanggalSelesai || schedule.tanggal
+          });
+        }
+      }
     }
   });
 
-  // Sort descending by date (dummy sort)
-  notifications.reverse();
+  // Urutkan berdasarkan ID atau Date secara menurun (terbaru di atas)
+  notifications.sort((a, b) => b.id.localeCompare(a.id));
 
   const getIcon = (type) => {
     if(type === 'success') return <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
@@ -81,7 +102,7 @@ export default function NotifikasiPage() {
       <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
         <PageHeader title="Pusat Notifikasi" />
         
-        <main className="flex-1 p-4 sm:p-6 max-w-3xl">
+        <main className="flex-1 p-4 sm:p-6 max-w-3xl mx-auto w-full">
           <section className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-slate-100 flex items-center justify-between">
               <h2 className="font-bold text-slate-800">Notifikasi Terbaru</h2>
