@@ -113,6 +113,7 @@ export default function AdminDashboardPage() {
                     const uploadedCount = requirements.filter(r => reg.berkas?.[r.key] && typeof reg.berkas[r.key] === 'object').length;
                     const totalReq = requirements.length;
                     const isDisetujui = reg.statusVerifikasi === 'disetujui';
+                    const hasSchedule = SidanusDB.getSchedules().some(s => s.registrationId === reg.id);
                     
                     return (
                       <tr key={reg.id} className="hover:bg-slate-50 transition-colors">
@@ -149,8 +150,10 @@ export default function AdminDashboardPage() {
                               <button onClick={() => handleVerify(reg.id, 'disetujui')} className="text-xs font-bold text-emerald-600 hover:underline">Setujui</button>
                               <button onClick={() => handleTolak(reg.id)} className="text-xs font-bold text-rose-600 hover:underline">Tolak</button>
                             </div>
-                          ) : isDisetujui ? (
+                          ) : isDisetujui && !hasSchedule ? (
                             <Link to="/admin/penjadwalan" className="text-xs font-bold text-violet-600 hover:underline">📅 Jadwalkan</Link>
+                          ) : isDisetujui && hasSchedule ? (
+                            <span className="text-xs font-bold text-slate-400">✓ Dijadwalkan</span>
                           ) : (
                             <span className="text-xs text-slate-400">Selesai</span>
                           )}
