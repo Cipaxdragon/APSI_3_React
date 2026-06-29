@@ -112,6 +112,27 @@ const SEED_REGISTRATIONS = [
   },
 ];
 
+// ─── Master Data ─────────────────────────────────────
+const DOSEN_LIST = [
+  { id: 'D001', nama: 'Dr. Andi Sumarni, S.T., M.Kom.', jabatan: 'Lektor Kepala' },
+  { id: 'D002', nama: 'Andi Muhammad Ansar, S.Kom., M.T.', jabatan: 'Lektor' },
+  { id: 'D003', nama: 'Faisal Akib, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: 'D004', nama: 'Rismawati, S.Kom., M.Kom.', jabatan: 'Asisten Ahli' },
+  { id: 'D005', nama: 'Dr. Mustari Lamada, S.Pd., M.T.', jabatan: 'Lektor Kepala' },
+  { id: 'D006', nama: 'Nur Afif, S.T., M.T.', jabatan: 'Lektor' },
+  { id: 'D007', nama: 'Dr. H. Alamsyah, S.T., M.T.', jabatan: 'Lektor Kepala' },
+  { id: 'D008', nama: 'Mega Orina Fitri, S.T., M.T.', jabatan: 'Lektor' },
+  { id: 'D009', nama: 'Gunawan, S.Kom., M.Kom.', jabatan: 'Asisten Ahli' },
+];
+
+const RUANGAN_LIST = [
+  { id: 'R001', nama: 'Ruang Seminar Lt. 3, Gedung A', kapasitas: 30 },
+  { id: 'R002', nama: 'Ruang Seminar Lt. 2, Gedung B', kapasitas: 25 },
+  { id: 'R003', nama: 'Aula Jurusan Sistem Informasi', kapasitas: 50 },
+  { id: 'R004', nama: 'Lab. Komputer 1, Gedung B', kapasitas: 20 },
+  { id: 'R005', nama: 'Ruang Sidang Dekanat Lt. 4', kapasitas: 15 },
+];
+
 const SEED_SCHEDULES = [
   {
     id: 'SCH-001',
@@ -307,6 +328,67 @@ function getBerkasRequirements(jenisUjian) {
   return requirements[jenisUjian] || [];
 }
 
+// ─── Master Data Helpers ─────────────────────────────
+function getDosenList() {
+  return DOSEN_LIST;
+}
+function getRuanganList() {
+  return RUANGAN_LIST;
+}
+
+// Hitung tanggal kerja H+N dari hari ini (skip Sabtu & Minggu)
+function getNextWorkday(offsetDays) {
+  const d = new Date();
+  let added = 0;
+  while (added < offsetDays) {
+    d.setDate(d.getDate() + 1);
+    const day = d.getDay();
+    if (day !== 0 && day !== 6) added++;
+  }
+  return d.toISOString().split('T')[0];
+}
+
+// Saran jadwal otomatis berdasarkan data mahasiswa
+function suggestSchedule(nim) {
+  const student = getStudent(nim);
+  if (!student) return null;
+
+  const suggestedDate = getNextWorkday(3);
+
+  // Dosen yang sudah dipakai di jadwal pada tanggal yang sama
+  const existingOnDate = getSchedules().filter(s => s.tanggal === suggestedDate);
+  const usedDosen = new Set();
+  existingOnDate.forEach(s => {
+    [s.ketuaSidang, s.sekretaris, s.penguji1, s.penguji2].forEach(d => usedDosen.add(d));
+  });
+
+  // Pembimbing sudah fix sebagai ketua & sekretaris
+  const ketuaSidang = student.pembimbing1;
+  const sekretaris = student.pembimbing2;
+  usedDosen.add(ketuaSidang);
+  usedDosen.add(sekretaris);
+
+  // Cari penguji 1 & 2 dari DOSEN_LIST yang belum dipakai
+  const available = DOSEN_LIST
+    .map(d => d.nama)
+    .filter(nama => !usedDosen.has(nama) && nama !== ketuaSidang && nama !== sekretaris);
+
+  // Pilih ruangan pertama yang tersedia
+  const ruangan = RUANGAN_LIST[0]?.nama || 'Ruang Seminar Lt. 3, Gedung A';
+
+  return {
+    tanggal: suggestedDate,
+    jamMulai: '08:00',
+    jamSelesai: '10:00',
+    ruangan,
+    ketuaSidang,
+    sekretaris,
+    penguji1: available[0] || '',
+    penguji2: available[1] || '',
+    catatan: 'Mohon mahasiswa hadir 30 menit sebelum ujian dimulai.',
+  };
+}
+
 // Auto-init on import
 init();
 
@@ -318,4 +400,5 @@ export const SidanusDB = {
   getRegistrationsByStatus, hasActiveRegistration, addRegistration, updateRegistration,
   getSchedules, getSchedulesByStatus, addSchedule, updateSchedule,
   getExamLabel, getStatusLabel, getStatusColor, formatDate, getNextExamType, getBerkasRequirements,
+  getDosenList, getRuanganList, suggestSchedule,
 };
