@@ -161,7 +161,7 @@ export default function DaftarUjianPage() {
       <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
         <PageHeader title="Pendaftaran Ujian" />
         
-        <main className="flex-1 p-4 sm:p-6 max-w-4xl">
+        <main className="flex-1 p-4 sm:p-6 max-w-4xl mx-auto w-full">
           {/* Progress indicator */}
           <div className="mb-6 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex items-center justify-between">
             <div>

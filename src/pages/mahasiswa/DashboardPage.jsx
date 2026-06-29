@@ -24,7 +24,10 @@ export default function MahasiswaDashboard() {
 
   const currentSchedule = activeSchedules.length > 0 ? activeSchedules[0] : null;
 
-  const sortedRegs = [...registrations].sort((a, b) => new Date(b.tanggalDaftar) - new Date(a.tanggalDaftar));
+  const sortedRegs = [...registrations].sort((a, b) => {
+    const dateDiff = new Date(b.tanggalDaftar) - new Date(a.tanggalDaftar);
+    return dateDiff !== 0 ? dateDiff : b.id.localeCompare(a.id);
+  });
   const activeReg = sortedRegs[0];
   
   // isProses: ada pendaftaran aktif yang belum selesai/dikembalikan/lulus
