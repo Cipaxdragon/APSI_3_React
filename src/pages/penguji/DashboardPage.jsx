@@ -24,13 +24,7 @@ export default function PengujiDashboardPage() {
      sch.penguji2?.includes(pengujiName))
   );
 
-  const completedSchedules = schedules.filter(sch =>
-    sch.statusKaprodi === 'selesai' &&
-    (sch.ketuaSidang?.includes(pengujiName) ||
-     sch.sekretaris?.includes(pengujiName) ||
-     sch.penguji1?.includes(pengujiName) ||
-     sch.penguji2?.includes(pengujiName))
-  );
+
 
   const handleSelesaikanUjian = (sch, { nilai, catatan, perluRevisi }) => {
     const student = SidanusDB.getStudent(sch.nim);
@@ -91,10 +85,6 @@ export default function PengujiDashboardPage() {
               <div>
                 <p className="text-3xl font-extrabold">{mySchedules.length}</p>
                 <p className="text-xs text-rose-200 uppercase tracking-wider font-semibold">Ujian Aktif</p>
-              </div>
-              <div>
-                <p className="text-3xl font-extrabold">{completedSchedules.length}</p>
-                <p className="text-xs text-rose-200 uppercase tracking-wider font-semibold">Ujian Selesai</p>
               </div>
             </div>
           </section>
@@ -167,38 +157,7 @@ export default function PengujiDashboardPage() {
             </div>
           </section>
 
-          {/* Riwayat Selesai */}
-          {completedSchedules.length > 0 && (
-            <section className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-              <div className="flex items-center justify-between p-5 border-b border-slate-100">
-                <h2 className="font-bold text-slate-800">Riwayat Ujian Selesai</h2>
-                <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-full">{completedSchedules.length} selesai</span>
-              </div>
-              <div className="divide-y divide-slate-100">
-                {completedSchedules.map(sch => {
-                  const student = SidanusDB.getStudent(sch.nim);
-                  return (
-                    <div key={sch.id} className="px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <div className="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 flex-shrink-0">
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <div>
-                          <p className="font-bold text-slate-800 text-sm">{student?.nama}</p>
-                          <p className="text-xs text-slate-500">{SidanusDB.getExamLabel(sch.jenisUjian)} · {SidanusDB.formatDate(sch.tanggal)}</p>
-                          {sch.catatanPenguji && <p className="text-xs text-slate-400 italic mt-0.5">"{sch.catatanPenguji}"</p>}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        {sch.nilai && <p className="text-lg font-extrabold text-emerald-600">{sch.nilai}</p>}
-                        {sch.perluRevisi && <p className="text-[10px] text-amber-600 font-bold bg-amber-100 px-2 py-0.5 rounded-full">Perlu Revisi</p>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
+
         </main>
       </div>
     </div>
@@ -282,7 +241,6 @@ function NilaiModal({ modal, onClose, onSubmit }) {
               className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-rose-400"
             />
           </div>
-
 
           {/* Actions */}
           <div className="flex gap-3 pt-2">

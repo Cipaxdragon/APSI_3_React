@@ -4,6 +4,7 @@ import PageHeader from '../../components/layout/PageHeader';
 import { useAuth } from '../../context/AuthContext';
 import { SidanusDB } from '../../db/sidanusDB';
 import { FileBadge, Download } from 'lucide-react';
+import { generateSKL } from '../../utils/pdfGenerator';
 
 export default function SKKelulusanPage() {
   const { session } = useAuth();
@@ -12,6 +13,11 @@ export default function SKKelulusanPage() {
   if (!student) return null;
 
   const isLulus = student.statusUjian === 'lulus';
+  
+  const registrations = SidanusDB.getRegistrationsByNim(session?.identifier);
+  const sortedRegs = [...registrations].sort((a, b) => new Date(b.tanggalDaftar) - new Date(a.tanggalDaftar));
+  const activeReg = sortedRegs[0];
+  const currentSchedule = activeReg ? SidanusDB.getSchedules().find(s => s.registrationId === activeReg.id) : null;
   
   return (
     <div className="flex bg-slate-50 min-h-screen">
@@ -58,7 +64,10 @@ export default function SKKelulusanPage() {
                 </div>
               </div>
 
-              <button className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all active:scale-95">
+              <button 
+                onClick={() => generateSKL(student, currentSchedule)}
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all active:scale-95"
+              >
                 <Download className="w-5 h-5" />
                 Unduh PDF SKL
               </button>

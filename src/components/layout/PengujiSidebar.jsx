@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Home, Edit3, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Home, Edit3, Settings, LogOut, Menu, X, Archive } from 'lucide-react';
 
 export default function PengujiSidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -17,6 +17,7 @@ export default function PengujiSidebar() {
 
   const navItems = [
     { label: 'Jadwal Menguji', path: '/penguji/dashboard', icon: Home },
+    { label: 'Riwayat Ujian Selesai', path: '/penguji/riwayat', icon: Archive },
   ];
 
   return (

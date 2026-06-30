@@ -204,3 +204,78 @@ export const generateLembarPengesahan = (student, schedule) => {
     alert("Gagal membuat PDF: " + error.message);
   }
 };
+
+export const generateSKL = (student, schedule) => {
+  try {
+    const doc = new jsPDF('p', 'mm', 'a4');
+    
+    // Add Watermark
+    doc.setGState(new doc.GState({opacity: 0.1}));
+    const logoSize = 120;
+    doc.addImage(logoBase64, 'PNG', (210 - logoSize)/2, (297 - logoSize)/2, logoSize, logoSize);
+    doc.setGState(new doc.GState({opacity: 1.0}));
+    
+    // Header
+    doc.setFontSize(16);
+    doc.setFont("times", "bold");
+    doc.text("UNIVERSITAS ISLAM NEGERI ALAUDDIN MAKASSAR", 105, 20, { align: "center" });
+    doc.setFontSize(14);
+    doc.text("FAKULTAS SAINS DAN TEKNOLOGI", 105, 28, { align: "center" });
+    doc.setFontSize(10);
+    doc.setFont("times", "normal");
+    doc.text(`Program Studi ${student.prodi}`, 105, 34, { align: "center" });
+  
+    doc.setLineWidth(1);
+    doc.line(20, 38, 190, 38);
+    doc.setLineWidth(0.3);
+    doc.line(20, 39, 190, 39);
+    
+    // Title
+    doc.setFontSize(16);
+    doc.setFont("times", "bold");
+    doc.text("SURAT KETERANGAN LULUS", 105, 55, { align: "center" });
+    doc.setLineWidth(0.5);
+    doc.line(65, 57, 145, 57);
+    
+    doc.setFontSize(11);
+    doc.setFont("times", "normal");
+    doc.text("Nomor: B-.../Un.06.1/FST/PP.00.9/06/2026", 105, 63, { align: "center" });
+    
+    doc.setFontSize(12);
+    const intro = `Dekan Fakultas Sains dan Teknologi Universitas Islam Negeri Alauddin Makassar dengan ini menerangkan bahwa:`;
+    const splitIntro = doc.splitTextToSize(intro, 160);
+    doc.text(splitIntro, 25, 80);
+    
+    let currentY = 85 + splitIntro.length * 5;
+    doc.text("Nama", 40, currentY); doc.text(`: ${student.nama}`, 75, currentY); currentY += 8;
+    doc.text("NIM", 40, currentY); doc.text(`: ${student.nim}`, 75, currentY); currentY += 8;
+    doc.text("Program Studi", 40, currentY); doc.text(`: ${student.prodi}`, 75, currentY); currentY += 8;
+    
+    currentY += 5;
+    const tanggalText = schedule ? schedule.tanggal : '-';
+    const p1 = `Telah menyelesaikan seluruh persyaratan akademik dan dinyatakan LULUS pada program strata satu (S1) pada tanggal ${tanggalText}. Oleh karena itu, yang bersangkutan berhak menyandang gelar Sarjana Komputer (S.Kom).`;
+    const splitP1 = doc.splitTextToSize(p1, 160);
+    doc.text(splitP1, 25, currentY, { align: "justify", lineHeightFactor: 1.5 });
+    
+    currentY += splitP1.length * 6 + 5;
+    const p2 = `Surat Keterangan Lulus ini diberikan sebagai pengganti ijazah sementara sampai ijazah asli diterbitkan, dan dapat dipergunakan untuk keperluan sebagaimana mestinya.`;
+    const splitP2 = doc.splitTextToSize(p2, 160);
+    doc.text(splitP2, 25, currentY, { align: "justify", lineHeightFactor: 1.5 });
+    
+    currentY += splitP2.length * 6 + 15;
+    
+    const sigX = 150; // Center coordinate for the signature block on the right
+    doc.text(`Samata, ${tanggalText}`, sigX, currentY, { align: "center" }); currentY += 6;
+    doc.text("Dekan Fakultas Sains dan Teknologi,", sigX, currentY, { align: "center" }); currentY += 25;
+    
+    doc.setFont("times", "bold");
+    doc.text("Ar. Fahmyddin A'raaf Tauhid, S.T., M.Arch., Ph.D., IAI", sigX, currentY, { align: "center" }); currentY += 5;
+    doc.setFont("times", "normal");
+    doc.text("NIP. 19700101 200003 1 001", sigX, currentY, { align: "center" });
+    
+    doc.save(`SKL_${student.nim}.pdf`);
+  } catch (error) {
+    console.error("PDF Generation Error: ", error);
+    alert("Gagal membuat PDF SKL: " + error.message);
+  }
+};

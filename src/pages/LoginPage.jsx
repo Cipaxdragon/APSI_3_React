@@ -108,11 +108,26 @@ export default function LoginPage() {
                 <input 
                   id="username" 
                   type="text" 
+                  list="username-options"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   placeholder="Masukkan username Anda"
                   className="input-field-login w-full border border-slate-200 bg-slate-50 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-700" 
                 />
+                {role === 'mahasiswa' && (
+                  <datalist id="username-options">
+                    {SidanusDB.getStudents().map(s => (
+                      <option key={s.nim} value={s.nim}>{s.nama} - {s.nim}</option>
+                    ))}
+                  </datalist>
+                )}
+                {role === 'penguji' && (
+                  <datalist id="username-options">
+                    {SidanusDB.getDosenList().map(d => (
+                      <option key={d.nama} value={d.nama}>{d.nama} - {d.jabatan}</option>
+                    ))}
+                  </datalist>
+                )}
               </div>
             </div>
 

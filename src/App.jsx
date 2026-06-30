@@ -16,6 +16,7 @@ import KaprodiDashboard from './pages/kaprodi/DashboardPage';
 import KaprodiRiwayat from './pages/kaprodi/RiwayatPage';
 import KaprodiKalender from './pages/kaprodi/KalenderPage';
 import PengujiDashboard from './pages/penguji/DashboardPage';
+import PengujiRiwayat from './pages/penguji/RiwayatPage';
 import JadwalPublik from './pages/JadwalPublikPage';
 
 // Guard: cek apakah user sudah login dengan role yang benar
@@ -70,6 +71,7 @@ function App() {
         {/* Penguji Routes */}
         <Route element={<AuthGuard role="penguji" />}>
           <Route path="/penguji/dashboard" element={<PengujiDashboard />} />
+          <Route path="/penguji/riwayat" element={<PengujiRiwayat />} />
         </Route>
 
         {/* Catch all */}
