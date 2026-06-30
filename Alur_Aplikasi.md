@@ -73,11 +73,18 @@ Jadwal yang dibuat Admin tidak serta merta langsung jadi. Jadwal tersebut ibarat
 * **Jika setuju:** Kaprodi tinggal mengklik tombol "Setujui". Jadwal langsung sah!
 * **Jika menolak:** (Misalnya Kaprodi tahu bahwa salah satu dosen penguji sedang keluar kota), Kaprodi bisa mengklik "Tolak" dan meninggalkan catatan (Contoh: *"Ganti Pak Budi karena beliau sedang dinas"*). Jadwal itu akan kembali ke Admin untuk diperbaiki ulang.
 
-### 5. Tahap Pelaksanaan (Oleh Semua Pihak 🎉)
+### 5. Tahap Pelaksanaan & Penilaian (Oleh Dosen Penguji 📋)
 Ketika Kaprodi sudah mengetuk palu persetujuan:
 * Jadwal ujian resmi akan otomatis muncul di **Dashboard Mahasiswa**, lengkap dengan hari, ruangan, dan siapa dosen pengujinya.
-* Jadwal tersebut juga akan otomatis muncul di **Kalender Dosen Penguji** yang bersangkutan, sehingga dosen tahu kapan ia harus datang menguji.
+* Jadwal tersebut juga akan otomatis muncul di **Dashboard Dosen Penguji** (di menu Jadwal Menguji).
 * Pada hari-H, ujian dilangsungkan secara tatap muka (offline) di ruangan yang telah ditetapkan.
+* Setelah ujian selesai, Dosen Penguji menekan tombol **"Selesaikan & Nilai"** di aplikasinya untuk memberikan nilai akhir (A, B+, dll) beserta catatan revisi.
+* Hasil penilaian akan langsung diarsipkan ke halaman **Riwayat Ujian Selesai** milik dosen tersebut.
+
+### 6. Tahap Akhir & SKL (Oleh Mahasiswa 👨‍🎓)
+* Jika mahasiswa tersebut baru menyelesaikan ujian Proposal atau Hasil, sistem akan memperbarui statusnya, sehingga ia bisa kembali ke Langkah 1 untuk mendaftar ujian tingkat berikutnya.
+* Jika ujian yang diselesaikan adalah **Ujian Munaqasyah**, maka status mahasiswa otomatis menjadi "LULUS".
+* Di Dashboard mahasiswa yang telah lulus, akan muncul tombol emas khusus untuk **Mengunduh Surat Keterangan Lulus (SKL)** dalam bentuk dokumen PDF ber-KOP resmi.
 
 > [!TIP]
-> **Keunggulan Sistem:** Mahasiswa tidak perlu lagi repot-repot bertanya "Berkas saya sudah sampai mana?". Mereka cukup membuka aplikasi SIDANUS di HP/Laptop mereka, dan mereka bisa melihat *timeline* (lacak status) pendaftaran mereka secara *real-time* persis seperti melacak paket belanja online.
+> **Keunggulan Sistem:** Mahasiswa tidak perlu lagi repot-repot bertanya "Berkas saya sudah sampai mana?". Mereka cukup membuka aplikasi SIDANUS, dan mereka bisa melihat *timeline* pendaftaran secara *real-time*. Di sisi lain, dosen tidak perlu lagi mengisi blangko nilai manual karena semua terintegrasi digital!

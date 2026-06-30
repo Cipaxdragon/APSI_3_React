@@ -62,4 +62,5 @@ Akun ini digunakan oleh dosen untuk melihat jadwal menguji sidang mahasiswa. Gun
 ---
 
 **Tips Simulasi:**
+- Jika Anda memilih peran **Mahasiswa** atau **Dosen Penguji**, saat Anda mengklik kolom input *Username*, sebuah **Dropdown (Datalist)** berisi seluruh daftar nama di bawah ini akan otomatis muncul, sehingga Anda tinggal memilih tanpa perlu mengetik ulang ID/NIM-nya!
 - Jika Anda lupa ID-nya, Anda juga bisa langsung menekan tombol-tombol **"Demo Cepat"** di bagian bawah halaman login untuk masuk secara otomatis menggunakan akun *default* perwakilan dari masing-masing role (Misal: Akun Mahasiswa diwakili Ahmad Ghazali).

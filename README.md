@@ -100,6 +100,7 @@ Sistem ini memiliki **4 peran pengguna** yang masing-masing memiliki akses dan t
   - Jenis ujian sudah terkunci otomatis mengikuti perkembangan akademik terakhir mahasiswa.
   - Slot dokumen yang diminta akan beradaptasi secara otomatis berdasarkan tipe ujian.
   - Tracking *timeline* pada Dashboard diperbarui otomatis sejalan dengan perubahan yang dilakukan Admin/Kaprodi.
+  - Terdapat **Generator PDF Surat Keterangan Lulus (SKL)** resmi bagi mahasiswa yang telah menyelesaikan ujian Munaqasyah.
 
 ### 🛡️ 2. Admin Program Studi
 - **Tugas**: Memverifikasi berkas, menjadwalkan ujian, menentukan penguji.
@@ -115,9 +116,11 @@ Sistem ini memiliki **4 peran pengguna** yang masing-masing memiliki akses dan t
   - Terdapat **Riwayat Persetujuan** (Log) untuk melacak kembali jadwal mana saja yang pernah disetujui atau ditolak beserta alasan penolakannya.
 
 ### 📋 4. Dosen Penguji
-- **Tugas**: Melihat jadwal tugas menguji, memeriksa kelengkapan data skripsi mahasiswa yang akan diuji.
+- **Tugas**: Melihat jadwal tugas menguji, memeriksa kelengkapan data skripsi mahasiswa yang akan diuji, serta memberikan penilaian.
 - **Keunggulan Baru**:
-  - Input nilai, catatan revisi, dan penyelesaian ujian dilakukan dengan ringkas melalui sistem *Modal / Pop-up*.
+  - Input nilai, catatan revisi, dan penyelesaian ujian dilakukan dengan ringkas melalui sistem *Modal / Pop-up* di Dashboard (Jadwal Menguji).
+  - Terdapat halaman **Riwayat Ujian Selesai** untuk mengarsipkan semua data mahasiswa yang pernah diuji beserta nilainya.
+  - Kemudahan akses login dengan fitur *Dropdown Datalist* nama dosen penguji.
 
 ---
 
