@@ -120,8 +120,8 @@ export default function AdminDashboardPage() {
                       <tr key={reg.id} className="hover:bg-slate-50 transition-colors">
                         <td className="px-5 py-4 text-slate-400 font-medium">{String(idx + 1).padStart(2, '0')}</td>
                         <td className="px-5 py-4">
-                          <p className="font-bold text-slate-800 text-sm">{student.nama}</p>
-                          <p className="text-xs text-slate-500">{student.nim}</p>
+                          <p className="font-extrabold text-slate-800 text-base">{student.nama}</p>
+                          <p className="text-sm font-semibold text-slate-500 mt-0.5">{student.nim}</p>
                         </td>
                         <td className="px-5 py-4">
                           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${reg.jenisUjian === 'munaqasyah' ? 'bg-emerald-100 text-emerald-700' : reg.jenisUjian === 'hasil' ? 'bg-teal-100 text-teal-700' : 'bg-blue-100 text-blue-700'}`}>
@@ -213,18 +213,18 @@ function BerkasModal({ modal, onClose, onSetujui, onTolak }) {
 
         {/* Info Mahasiswa */}
         <div className="px-6 py-4 bg-slate-50 border-b border-slate-100">
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-2 gap-4 text-base">
             <div>
-              <p className="text-xs text-slate-400 font-medium">Nama Mahasiswa</p>
-              <p className="font-bold text-slate-800">{student?.nama}</p>
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Nama Mahasiswa</p>
+              <p className="font-extrabold text-slate-800 text-lg">{student?.nama}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-400 font-medium">NIM</p>
-              <p className="font-bold text-slate-800">{student?.nim}</p>
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">NIM</p>
+              <p className="font-bold text-slate-700 text-lg">{student?.nim}</p>
             </div>
-            <div className="col-span-2">
-              <p className="text-xs text-slate-400 font-medium">Judul Skripsi</p>
-              <p className="font-semibold text-slate-700 text-xs leading-relaxed">{student?.judul}</p>
+            <div className="col-span-2 mt-2">
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Judul Skripsi</p>
+              <p className="font-semibold text-slate-800 text-sm leading-relaxed border-l-4 border-emerald-500 pl-3 py-1 bg-white rounded-r-lg shadow-sm">{student?.judul}</p>
             </div>
           </div>
         </div>

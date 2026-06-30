@@ -146,7 +146,7 @@ export default function LoginPage() {
           </div>
 
           {/* Demo Login Shortcuts */}
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2">
             <button onClick={() => handleDemoLogin('mahasiswa')} className="demo-badge-login flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-xl text-brand-700 text-xs font-semibold hover:bg-brand-100">
               <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6" />
