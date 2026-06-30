@@ -77,9 +77,13 @@ APSI_3_React/
 │       │   └── SKKelulusanPage.jsx
 │       ├── admin/               ← Portal Admin
 │       │   ├── DashboardPage.jsx
-│       │   └── PenjadwalanPage.jsx
+│       │   ├── PenjadwalanPage.jsx
+│       │   ├── KalenderPage.jsx
+│       │   └── DatabasePage.jsx
 │       ├── kaprodi/             ← Portal Kaprodi
-│       │   └── DashboardPage.jsx
+│       │   ├── DashboardPage.jsx
+│       │   ├── RiwayatPage.jsx
+│       │   └── KalenderPage.jsx
 │       └── penguji/             ← Portal Penguji
 │           └── DashboardPage.jsx
 ```
@@ -100,14 +104,20 @@ Sistem ini memiliki **4 peran pengguna** yang masing-masing memiliki akses dan t
 ### 🛡️ 2. Admin Program Studi
 - **Tugas**: Memverifikasi berkas, menjadwalkan ujian, menentukan penguji.
 - **Keunggulan Baru**: 
-  - Halaman Penjadwalan akan langsung menyeleksi mahasiswa yang status verifikasi berkasnya **"disetujui"**.
-  - Catatan revisi penolakan berkas dari Admin akan langsung muncul di panel Notifikasi dan Timeline Mahasiswa.
+  - Halaman Penjadwalan akan menyeleksi mahasiswa yang berkasnya "disetujui" atau yang jadwal sebelumnya ditolak.
+  - Dilengkapi fitur **Auto-Saran Jadwal** untuk menemukan jam, ruangan, dan penguji yang tersedia secara otomatis.
+  - Catatan revisi penolakan berkas dari Admin akan langsung muncul di panel Notifikasi Mahasiswa.
 
 ### 🏛️ 3. Ketua Program Studi (Kaprodi)
-- **Tugas**: Menyetujui atau merevisi jadwal & komposisi tim penguji yang diusulkan Admin Prodi.
+- **Tugas**: Menyetujui atau menolak jadwal & komposisi tim penguji yang diusulkan Admin Prodi.
+- **Keunggulan Baru**:
+  - Terdapat **Kalender Akademik** interaktif untuk memantau hari libur nasional, agenda kampus, dan kepadatan jadwal ujian.
+  - Terdapat **Riwayat Persetujuan** (Log) untuk melacak kembali jadwal mana saja yang pernah disetujui atau ditolak beserta alasan penolakannya.
 
 ### 📋 4. Dosen Penguji
 - **Tugas**: Melihat jadwal tugas menguji, memeriksa kelengkapan data skripsi mahasiswa yang akan diuji.
+- **Keunggulan Baru**:
+  - Input nilai, catatan revisi, dan penyelesaian ujian dilakukan dengan ringkas melalui sistem *Modal / Pop-up*.
 
 ---
 
