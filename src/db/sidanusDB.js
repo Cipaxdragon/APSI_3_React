@@ -431,33 +431,22 @@ function getNextExamType(nim) {
 function getBerkasRequirements(jenisUjian) {
   const requirements = {
     proposal: [
-      { key: 'kartu_kontrol', label: 'Kartu Kontrol / Lembar Konsultasi' },
-      { key: 'naskah_proposal', label: 'Naskah Proposal (PDF)' },
-      { key: 'persetujuan_pemb1', label: 'Bukti Persetujuan Pembimbing 1 (PDF)' },
-      { key: 'persetujuan_pemb2', label: 'Bukti Persetujuan Pembimbing 2 (PDF)' },
-      { key: 'acc_bimbingan_pemb1', label: 'Lembar Bimbingan ACC Pembimbing 1 (PDF)' },
-      { key: 'acc_bimbingan_pemb2', label: 'Lembar Bimbingan ACC Pembimbing 2 (PDF)' },
+      { key: 'draft_proposal', label: 'Draft Proposal (PDF)' },
+      { key: 'kartu_kontrol', label: 'Kartu Kontrol' },
+      { key: 'bimbingan_pemb1', label: 'Lembar Bimbingan Pembimbing 1 (PDF)' },
+      { key: 'bimbingan_pemb2', label: 'Lembar Bimbingan Pembimbing 2 (PDF)' },
       { key: 'transkrip', label: 'Transkrip Terakhir (PDF)' },
-      { key: 'sk_ujian', label: 'SK Ujian (PDF)' },
     ],
     hasil: [
-      { key: 'sk_pembimbing', label: 'SK Pembimbing (PDF)' },
-      { key: 'sk_sempro', label: 'SK Pelaksanaan Ujian Proposal (PDF)' },
       { key: 'berita_acara_sempro', label: 'Berita Acara Ujian Proposal (PDF)' },
       { key: 'draft_hasil', label: 'Draft Hasil Penelitian (PDF)' },
-      { key: 'kartu_bimbingan_hasil', label: 'Kartu Bimbingan (PDF)' },
       { key: 'acc_bimbingan_pemb1', label: 'Lembar Bimbingan ACC Pembimbing 1 (PDF)' },
       { key: 'acc_bimbingan_pemb2', label: 'Lembar Bimbingan ACC Pembimbing 2 (PDF)' },
       { key: 'acc_komprehensif', label: 'ACC Ujian Komprehensif (PDF)' },
-      { key: 'file_skripsi', label: 'File Skripsi / Tugas Akhir (PDF)' },
     ],
     munaqasyah: [
       { key: 'sk_seminar_hasil', label: 'SK Pelaksanaan Ujian Seminar Hasil (PDF)' },
       { key: 'naskah_skripsi', label: 'Naskah Skripsi Final (PDF)' },
-      { key: 'sertifikat', label: 'Sertifikat Kompetensi / Pendukung (PDF)' },
-      { key: 'transkrip', label: 'Transkrip Nilai Sementara (PDF)' },
-      { key: 'bukti_lunas_spp', label: 'Bukti Lunas Pembayaran SPP (PDF)' },
-      { key: 'lembar_komprehensif', label: 'Lembar Ujian Komprehensif (PDF)' },
       { key: 'bukti_hafalan', label: 'Bukti Hafalan (PDF)' },
     ],
   };
