@@ -19,78 +19,92 @@ const SEED_STUDENTS = [
     nim: '60900121064',
     nama: 'Ahmad Ghazali',
     prodi: 'Sistem Informasi',
-    semester: 8,
+    semester: 10,
     email: 'ahmadghazali@uin.ac.id',
     hp: '082312345678',
     judul: 'Analisis Penerimaan Sistem ERP Menggunakan Metode Technology Acceptance Model (TAM) pada PT. Sinar Nusantara Makassar',
     abstrak: 'Penelitian ini bertujuan untuk menganalisis tingkat penerimaan sistem ERP pada PT. Sinar Nusantara Makassar menggunakan TAM.',
-    pembimbing1: 'Dr. Andi Sumarni, S.T., M.Kom.',
-    pembimbing2: 'Andi Muhammad Ansar, S.Kom., M.T.',
+    pembimbing1: 'Dr. Farida Yusuf, S.Kom., M.T.',
+    pembimbing2: 'Rahman, S.Kom., M.T.',
     statusUjian: 'belum',
     angkatan: 2021,
   },
   {
-    nim: '60900120057',
-    nama: 'Muhammad Rizal Aditya',
+    nim: '60900124026',
+    nama: 'Hilya Aini Nur Ridha',
     prodi: 'Sistem Informasi',
-    semester: 10,
-    email: 'rizaladitya@uin.ac.id',
+    semester: 4,
+    email: 'hilya@uin.ac.id',
     hp: '081234567890',
-    judul: 'Implementasi Machine Learning untuk Prediksi Mahasiswa Bermasalah di PTKIN',
-    abstrak: 'Penelitian ini mengimplementasikan algoritma machine learning untuk memprediksi mahasiswa yang berpotensi bermasalah.',
-    pembimbing1: 'Dr. Andi Sumarni, S.T., M.Kom.',
-    pembimbing2: 'Andi Muhammad Ansar, S.Kom., M.T.',
-    statusUjian: 'hasil_selesai',
-    angkatan: 2020,
-  },
-  {
-    nim: '60900120091',
-    nama: 'Zainal Abidin Harahap',
-    prodi: 'Sistem Informasi',
-    semester: 10,
-    email: 'zainal.abidin@uin.ac.id',
-    hp: '085678901234',
-    judul: 'Analisis Keamanan Jaringan Komputer Menggunakan Metode Penetration Testing',
-    abstrak: 'Penelitian ini menganalisis keamanan jaringan komputer dengan pendekatan penetration testing.',
-    pembimbing1: 'Dr. H. Alamsyah, S.T., M.T.',
-    pembimbing2: 'Faisal Akib, S.Kom., M.Kom.',
-    statusUjian: 'hasil_selesai',
-    angkatan: 2020,
-  },
-  {
-    nim: '60900121005',
-    nama: 'Fatimah Az-Zahra',
-    prodi: 'Sistem Informasi',
-    semester: 8,
-    email: 'fatimah.az@uin.ac.id',
-    hp: '087890123456',
-    judul: 'Perancangan Sistem Informasi Perpustakaan Berbasis Web pada Kampus UIN Alauddin Makassar',
-    abstrak: 'Penelitian ini merancang sistem informasi perpustakaan berbasis web untuk meningkatkan efisiensi layanan.',
-    pembimbing1: 'Faisal Akib, S.Kom., M.Kom.',
-    pembimbing2: 'Rismawati, S.Kom., M.Kom.',
-    statusUjian: 'proposal_selesai',
-    angkatan: 2021,
-  },
-  {
-    nim: '60900121019',
-    nama: 'Nur Hikmah Salsabila',
-    prodi: 'Sistem Informasi',
-    semester: 8,
-    email: 'hikmah.salsa@uin.ac.id',
-    hp: '089012345678',
-    judul: 'Evaluasi Usability Aplikasi Mobile Banking Menggunakan Metode System Usability Scale (SUS)',
-    abstrak: 'Penelitian ini mengevaluasi tingkat usability aplikasi mobile banking menggunakan metode SUS.',
-    pembimbing1: 'Nur Afif, S.T., M.T.',
-    pembimbing2: 'Rismawati, S.Kom., M.Kom.',
+    judul: 'Penerapan Metode Agile dalam Pengembangan Sistem Informasi',
+    abstrak: 'Penelitian ini berfokus pada implementasi Agile di lingkungan akademik.',
+    pembimbing1: 'Dr. Farida Yusuf, S.Kom., M.T.',
+    pembimbing2: 'Rahman, S.Kom., M.T.',
     statusUjian: 'belum',
-    angkatan: 2021,
+    angkatan: 2024,
+  },
+  {
+    nim: '60900124027',
+    nama: 'Suci Ramadhani',
+    prodi: 'Sistem Informasi',
+    semester: 4,
+    email: 'suci@uin.ac.id',
+    hp: '082345678901',
+    judul: 'Perancangan Sistem Informasi Pendaftaran Ujian Berbasis Web',
+    abstrak: 'Penelitian ini mengembangkan sistem untuk digitalisasi ujian mahasiswa.',
+    pembimbing1: 'Faisal, S.Kom., M.Kom.',
+    pembimbing2: 'Erfina, S.Kom., M.Kom.',
+    statusUjian: 'proposal_selesai',
+    angkatan: 2024,
+  },
+  {
+    nim: '60900124028',
+    nama: 'Muh. Jabal Nurfajri',
+    prodi: 'Sistem Informasi',
+    semester: 4,
+    email: 'jabal@uin.ac.id',
+    hp: '083456789012',
+    judul: 'Implementasi Machine Learning untuk Prediksi Kelulusan Mahasiswa',
+    abstrak: 'Penelitian ini mengimplementasikan algoritma machine learning.',
+    pembimbing1: 'Asrul Ashari Muin, S.Kom., M.Kom.',
+    pembimbing2: 'Faisal, S.Kom., M.Kom.',
+    statusUjian: 'hasil_selesai',
+    angkatan: 2024,
+  },
+  {
+    nim: '60900124029',
+    nama: 'Dirghayu',
+    prodi: 'Sistem Informasi',
+    semester: 4,
+    email: 'dirghayu@uin.ac.id',
+    hp: '084567890123',
+    judul: 'Analisis Keamanan Jaringan Menggunakan Metode Penetration Testing',
+    abstrak: 'Penelitian ini menganalisis keamanan jaringan komputer.',
+    pembimbing1: 'Firmansyah Ibrahim, S.Kom., M.Kom.',
+    pembimbing2: 'Izmy Alwiah Musdar, S.Kom., M.Cs.',
+    statusUjian: 'belum',
+    angkatan: 2024,
+  },
+  {
+    nim: '60900124046',
+    nama: 'Elfitrah Ridhayana',
+    prodi: 'Sistem Informasi',
+    semester: 4,
+    email: 'elfitrah@uin.ac.id',
+    hp: '085678901234',
+    judul: 'Evaluasi Usability Aplikasi Mobile Menggunakan Metode SUS',
+    abstrak: 'Penelitian ini mengevaluasi aplikasi mobile banking.',
+    pembimbing1: 'Dr. Hastuti, S.Pd., M.Pd.i.',
+    pembimbing2: 'Adhy Rizaldy, S.Kom., M.Kom.',
+    statusUjian: 'belum',
+    angkatan: 2024,
   },
 ];
 
 const SEED_REGISTRATIONS = [
   {
     id: 'REG-001',
-    nim: '60900120057',
+    nim: '60900124028',
     jenisUjian: 'munaqasyah',
     tanggalDaftar: '2026-06-10',
     berkas: {
@@ -103,7 +117,7 @@ const SEED_REGISTRATIONS = [
   },
   {
     id: 'REG-002',
-    nim: '60900121005',
+    nim: '60900124027',
     jenisUjian: 'hasil',
     tanggalDaftar: '2026-06-12',
     berkas: {
@@ -117,15 +131,20 @@ const SEED_REGISTRATIONS = [
 
 // ─── Master Data ─────────────────────────────────────
 const SEED_DOSEN = [
-  { id: 'D001', nama: 'Dr. Andi Sumarni, S.T., M.Kom.', jabatan: 'Lektor Kepala' },
-  { id: 'D002', nama: 'Andi Muhammad Ansar, S.Kom., M.T.', jabatan: 'Lektor' },
-  { id: 'D003', nama: 'Faisal Akib, S.Kom., M.Kom.', jabatan: 'Lektor' },
-  { id: 'D004', nama: 'Rismawati, S.Kom., M.Kom.', jabatan: 'Asisten Ahli' },
-  { id: 'D005', nama: 'Dr. Mustari Lamada, S.Pd., M.T.', jabatan: 'Lektor Kepala' },
-  { id: 'D006', nama: 'Nur Afif, S.T., M.T.', jabatan: 'Lektor' },
-  { id: 'D007', nama: 'Dr. H. Alamsyah, S.T., M.T.', jabatan: 'Lektor Kepala' },
-  { id: 'D008', nama: 'Mega Orina Fitri, S.T., M.T.', jabatan: 'Lektor' },
-  { id: 'D009', nama: 'Gunawan, S.Kom., M.Kom.', jabatan: 'Asisten Ahli' },
+  { id: '908059103', nama: 'M Sya’Rani Machrizzandi, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: '8852773674130432', nama: 'Muhammad Rezky, S.Pd., M.Kom.', jabatan: 'Lektor' },
+  { id: '0916108801', nama: 'Izmy Alwiah Musdar, S.Kom., M.Cs.', jabatan: 'Lektor' },
+  { id: '2131058703', nama: 'Adhy Rizaldy, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: '2007018701', nama: 'Asrul Ashari Muin, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: '0915118501', nama: 'Erfina, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: '2012127603', nama: 'Faisal, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: '2019048701', nama: 'Dr. Farida Yusuf, S.Kom., M.T.', jabatan: 'Lektor Kepala' },
+  { id: '0918128902', nama: 'Firmansyah Ibrahim, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: '2027118701', nama: 'Dr. Hastuti, S.Pd., M.Pd.i.', jabatan: 'Lektor Kepala' },
+  { id: 'Muniardi', nama: 'Muniardi', jabatan: 'Asisten Ahli' },
+  { id: '0913038404', nama: 'Nahrun Hartono, S.Kom., M.Kom.', jabatan: 'Lektor' },
+  { id: '2001068301', nama: 'Rahman, S.Kom., M.T.', jabatan: 'Lektor' },
+  { id: '2023038802', nama: 'Reza Maulana, S.Kom., M.T.', jabatan: 'Lektor' },
 ];
 
 const SEED_RUANGAN = [
@@ -171,16 +190,16 @@ const SEED_SCHEDULES = [
   {
     id: 'SCH-001',
     registrationId: 'REG-002',
-    nim: '60900121005',
+    nim: '60900124027',
     jenisUjian: 'hasil',
     tanggal: '2026-06-16',
     jamMulai: '08:00',
     jamSelesai: '10:00',
     ruangan: 'Ruang Seminar Lt. 3, Gedung A',
-    ketuaSidang: 'Faisal Akib, S.Kom., M.Kom.',
-    sekretaris: 'Rismawati, S.Kom., M.Kom.',
-    penguji1: 'Dr. Mustari Lamada, S.Pd., M.T.',
-    penguji2: 'Nur Afif, S.T., M.T.',
+    ketuaSidang: 'Faisal, S.Kom., M.Kom.',
+    sekretaris: 'Erfina, S.Kom., M.Kom.',
+    penguji1: 'Dr. Hastuti, S.Pd., M.Pd.i.',
+    penguji2: 'Firmansyah Ibrahim, S.Kom., M.Kom.',
     statusKaprodi: 'disetujui',
     catatan: 'Mohon mahasiswa hadir 30 menit sebelum ujian dimulai.',
   },
@@ -188,14 +207,11 @@ const SEED_SCHEDULES = [
 
 // ─── Init ────────────────────────────────────────────
 function init() {
-  if (!localStorage.getItem(KEYS.STUDENTS))
-    localStorage.setItem(KEYS.STUDENTS, JSON.stringify(SEED_STUDENTS));
-  if (!localStorage.getItem(KEYS.REGISTRATIONS))
-    localStorage.setItem(KEYS.REGISTRATIONS, JSON.stringify(SEED_REGISTRATIONS));
-  if (!localStorage.getItem(KEYS.SCHEDULES))
-    localStorage.setItem(KEYS.SCHEDULES, JSON.stringify(SEED_SCHEDULES));
-  if (!localStorage.getItem(KEYS.DOSEN))
-    localStorage.setItem(KEYS.DOSEN, JSON.stringify(SEED_DOSEN));
+  // Force update seed data for new students mapping (so users don't need to clear cache manually)
+  localStorage.setItem(KEYS.STUDENTS, JSON.stringify(SEED_STUDENTS));
+  localStorage.setItem(KEYS.REGISTRATIONS, JSON.stringify(SEED_REGISTRATIONS));
+  localStorage.setItem(KEYS.SCHEDULES, JSON.stringify(SEED_SCHEDULES));
+  localStorage.setItem(KEYS.DOSEN, JSON.stringify(SEED_DOSEN));
   if (!localStorage.getItem(KEYS.RUANGAN))
     localStorage.setItem(KEYS.RUANGAN, JSON.stringify(SEED_RUANGAN));
     

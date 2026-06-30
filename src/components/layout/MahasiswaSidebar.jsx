@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Home, FileText, Calendar, Bell, FileBadge, User, LogOut } from 'lucide-react';
+import { Home, FileText, Calendar, Bell, FileBadge, User, LogOut, Menu, X } from 'lucide-react';
 import { SidanusDB } from '../../db/sidanusDB';
 
 export default function MahasiswaSidebar() {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { session, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,7 +36,25 @@ export default function MahasiswaSidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 left-0 z-50 h-screen">
+    <>
+      {/* Mobile Menu Button */}
+      <button 
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+        className="lg:hidden fixed bottom-6 right-6 z-[60] bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl hover:bg-emerald-700 transition-colors focus:outline-none"
+      >
+        {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {/* Backdrop */}
+      {isMobileOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-slate-900/50 z-40 transition-opacity backdrop-blur-sm"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`w-64 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 left-0 z-50 h-screen transition-transform duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
       {/* Brand */}
       <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
         <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 mr-3">
@@ -79,6 +98,7 @@ export default function MahasiswaSidebar() {
             <Link
               key={idx}
               to={item.path}
+              onClick={() => setIsMobileOpen(false)}
               className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                 isActive ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
@@ -105,5 +125,6 @@ export default function MahasiswaSidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }
