@@ -5,6 +5,7 @@ import PageHeader from '../../components/layout/PageHeader';
 import { useAuth } from '../../context/AuthContext';
 import { SidanusDB } from '../../db/sidanusDB';
 import { useRegistrations } from '../../hooks/useRegistrations';
+import { generateBeritaAcara, generateLembarPengesahan } from '../../utils/pdfGenerator';
 
 export default function MahasiswaDashboard() {
   const { session } = useAuth();
@@ -229,13 +230,19 @@ export default function MahasiswaDashboard() {
               <div className="xl:col-span-1 bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 flex flex-col transition-all">
                 <h3 className="font-bold text-slate-800 text-sm mb-4">Berkas Administrasi Ujian</h3>
                 <div className="grid grid-cols-2 gap-3 flex-1">
-                  <button className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors text-slate-600 group">
+                  <button 
+                    onClick={() => generateBeritaAcara(student, currentSchedule)}
+                    className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors text-slate-600 group"
+                  >
                     <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:text-emerald-600">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     </div>
                     <span className="text-[11px] font-bold text-center leading-tight">Berita Acara<br/>Ujian</span>
                   </button>
-                  <button className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-colors text-slate-600 group">
+                  <button 
+                    onClick={() => generateLembarPengesahan(student, currentSchedule)}
+                    className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-colors text-slate-600 group"
+                  >
                     <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:text-amber-600">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                     </div>
