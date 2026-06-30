@@ -183,12 +183,67 @@ export default function MahasiswaDashboard() {
             </section>
           )}
 
-          {/* Status Cards */}
-          <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            <StatCard icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" color="amber" count={statDikirim} label="Berkas Dikirim" />
-            <StatCard icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" color="emerald" count={statDisetujui} label="Berkas Disetujui" />
-            <StatCard icon="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" color="blue" count={statJadwal} label="Jadwal Aktif" />
-            <StatCard icon="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" color="rose" count={statRevisi} label="Perlu Revisi" />
+          {/* Functional Widgets: Progress & Quick Actions */}
+          <section className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+            {/* Progress Bar Skripsi */}
+            <div className={`${currentSchedule ? 'xl:col-span-2' : 'xl:col-span-3'} bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 transition-all`}>
+              <h3 className="font-bold text-slate-800 text-sm mb-6">Progres Penyelesaian Skripsi</h3>
+              
+              <div className="relative">
+                {/* Background Line */}
+                <div className="absolute top-1/2 left-0 w-full h-1.5 bg-slate-100 rounded-full -translate-y-1/2"></div>
+                
+                {/* Active Progress Line */}
+                <div 
+                  className="absolute top-1/2 left-0 h-1.5 bg-emerald-500 rounded-full -translate-y-1/2 transition-all duration-1000"
+                  style={{ width: student.statusUjian === 'lulus' ? '100%' : student.statusUjian === 'hasil_selesai' ? '66%' : student.statusUjian === 'proposal_selesai' ? '33%' : '0%' }}
+                ></div>
+
+                {/* Steps */}
+                <div className="relative flex justify-between">
+                  {[
+                    { label: 'Pendaftaran', status: 'done', desc: 'Selesai' },
+                    { label: 'Ujian Proposal', status: student.statusUjian === 'proposal_selesai' || student.statusUjian === 'hasil_selesai' || student.statusUjian === 'lulus' ? 'done' : 'active', desc: 'Tahap 1' },
+                    { label: 'Seminar Hasil', status: student.statusUjian === 'hasil_selesai' || student.statusUjian === 'lulus' ? 'done' : student.statusUjian === 'proposal_selesai' ? 'active' : 'pending', desc: 'Tahap 2' },
+                    { label: 'Ujian Munaqasyah', status: student.statusUjian === 'lulus' ? 'done' : student.statusUjian === 'hasil_selesai' ? 'active' : 'pending', desc: 'Final' }
+                  ].map((step, idx) => (
+                    <div key={idx} className="flex flex-col items-center w-1/4">
+                      <div className={`w-8 h-8 rounded-full border-4 flex items-center justify-center bg-white z-10 transition-colors
+                        ${step.status === 'done' ? 'border-emerald-500 text-emerald-500' : step.status === 'active' ? 'border-blue-500 text-blue-500 shadow-[0_0_0_4px_rgba(59,130,246,0.1)]' : 'border-slate-200 text-slate-300'}`}>
+                        {step.status === 'done' ? (
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                        ) : (
+                          <div className={`w-2.5 h-2.5 rounded-full ${step.status === 'active' ? 'bg-blue-500' : 'bg-slate-200'}`}></div>
+                        )}
+                      </div>
+                      <p className={`mt-3 text-xs font-bold text-center leading-tight ${step.status === 'pending' ? 'text-slate-400' : 'text-slate-700'}`}>{step.label}</p>
+                      <p className="text-[10px] text-slate-400 font-medium mt-0.5">{step.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions (Hanya muncul jika jadwal sudah ditetapkan) */}
+            {currentSchedule && (
+              <div className="xl:col-span-1 bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 flex flex-col transition-all">
+                <h3 className="font-bold text-slate-800 text-sm mb-4">Berkas Administrasi Ujian</h3>
+                <div className="grid grid-cols-2 gap-3 flex-1">
+                  <button className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors text-slate-600 group">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:text-emerald-600">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    </div>
+                    <span className="text-[11px] font-bold text-center leading-tight">Berita Acara<br/>Ujian</span>
+                  </button>
+                  <button className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-colors text-slate-600 group">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:text-amber-600">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                    </div>
+                    <span className="text-[11px] font-bold text-center leading-tight">Unduh Template<br/>Lembar Pengesahan</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* Timeline & Jadwal */}
@@ -202,36 +257,7 @@ export default function MahasiswaDashboard() {
             </section>
 
             <div className="order-1 lg:order-2 space-y-4">
-              <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-slate-800 text-sm">Jadwal Terdekat</h3>
-                  <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </div>
-                {currentSchedule ? (
-                  <div>
-                    <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold mb-3 
-                      ${currentSchedule.jenisUjian === 'munaqasyah' ? 'bg-emerald-100 text-emerald-700' : 
-                        currentSchedule.jenisUjian === 'hasil' ? 'bg-teal-100 text-teal-700' : 'bg-blue-100 text-blue-700'}`}>
-                      {SidanusDB.getExamLabel(currentSchedule.jenisUjian)}
-                    </span>
-                    <p className="text-xl font-extrabold text-slate-800">{SidanusDB.formatDate(currentSchedule.tanggal)}</p>
-                    <p className="text-sm font-semibold text-slate-600 mt-1">{currentSchedule.jamMulai} - {currentSchedule.jamSelesai}</p>
-                    <p className="text-sm text-slate-500 mt-2 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {currentSchedule.ruangan}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="text-center py-6 text-slate-400 text-sm">Tidak ada jadwal aktif.</div>
-                )}
-              </section>
+              <MiniCalendar scheduleDate={currentSchedule?.tanggal} />
 
               <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
                 <div className="flex items-center gap-3 mb-4">
@@ -277,22 +303,78 @@ export default function MahasiswaDashboard() {
 }
 
 function StatCard({ icon, color, count, label }) {
-  const colors = {
-    amber: 'bg-amber-100 text-amber-600',
-    emerald: 'bg-emerald-100 text-emerald-600',
-    blue: 'bg-blue-100 text-blue-600',
-    rose: 'bg-rose-100 text-rose-600'
+  const colorThemes = {
+    amber: { bg: 'bg-amber-50', text: 'text-amber-600', iconBg: 'bg-amber-100' },
+    emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', iconBg: 'bg-emerald-100' },
+    blue: { bg: 'bg-blue-50', text: 'text-blue-600', iconBg: 'bg-blue-100' },
+    rose: { bg: 'bg-rose-50', text: 'text-rose-600', iconBg: 'bg-rose-100' }
   };
+
+  const theme = colorThemes[color];
+
   return (
-    <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors[color].split(' ')[0]}`}>
-        <svg className={`w-5 h-5 ${colors[color].split(' ')[1]}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={icon} />
-        </svg>
+    <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full">
+      <div className="flex justify-between items-start mb-3">
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${theme.bg} ${theme.text} group-hover:${theme.iconBg}`}>
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={icon} />
+          </svg>
+        </div>
+        <h4 className="text-3xl font-black text-slate-800 leading-none mt-1">{count}</h4>
       </div>
-      <p className="text-2xl font-extrabold text-slate-800">{count}</p>
-      <p className="text-xs text-slate-500 mt-0.5 font-medium">{label}</p>
+      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{label}</p>
     </div>
+  );
+}
+
+function MiniCalendar({ scheduleDate }) {
+  const today = new Date();
+  const displayDate = scheduleDate ? new Date(scheduleDate) : today;
+  const dispMonth = displayDate.getMonth();
+  const dispYear = displayDate.getFullYear();
+  
+  const firstDay = new Date(dispYear, dispMonth, 1).getDay();
+  const daysInMonth = new Date(dispYear, dispMonth + 1, 0).getDate();
+  
+  const days = [];
+  for (let i = 0; i < firstDay; i++) days.push(null);
+  for (let i = 1; i <= daysInMonth; i++) days.push(i);
+  
+  const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  
+  return (
+    <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-bold text-slate-800 text-sm">Kalender Akademik</h3>
+        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+          {monthNames[dispMonth]} {dispYear}
+        </span>
+      </div>
+      
+      <div className="grid grid-cols-7 text-center gap-1 mb-2">
+        {['M', 'S', 'S', 'R', 'K', 'J', 'S'].map((d, i) => (
+          <div key={i} className="text-[10px] font-bold text-slate-400">{d}</div>
+        ))}
+      </div>
+      
+      <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center">
+        {days.map((day, idx) => {
+          if (!day) return <div key={idx} className="p-1"></div>;
+          
+          const isSchedule = scheduleDate && new Date(scheduleDate).getDate() === day && dispMonth === new Date(scheduleDate).getMonth() && dispYear === new Date(scheduleDate).getFullYear();
+          const isToday = !scheduleDate && day === today.getDate() && dispMonth === today.getMonth() && dispYear === today.getFullYear();
+          
+          return (
+            <div key={idx} className={`text-xs font-bold rounded-full w-7 h-7 mx-auto flex items-center justify-center cursor-default
+              ${isSchedule ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-200' 
+                : isToday ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200' 
+                : 'text-slate-600 hover:bg-slate-100'}`}>
+              {day}
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
