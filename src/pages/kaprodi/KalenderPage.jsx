@@ -6,6 +6,7 @@ import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function KalenderPage() {
   const [schedules, setSchedules] = useState([]);
+  const [events, setEvents] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date('2026-06-01')); // Using June 2026 for demo context
 
   useEffect(() => {
@@ -14,6 +15,7 @@ export default function KalenderPage() {
       s.statusKaprodi === 'disetujui' || s.statusKaprodi === 'selesai'
     );
     setSchedules(activeSchedules);
+    setEvents(SidanusDB.getAcademicEvents());
   }, []);
 
   const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
@@ -26,10 +28,14 @@ export default function KalenderPage() {
 
   const getSchedulesForDay = (day) => {
     const targetDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    // Format targetDate to YYYY-MM-DD string to match the schedule 'tanggal' format roughly
-    // In demo, dates are '2026-06-30'
     const dateString = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     return schedules.filter(s => s.tanggal === dateString);
+  };
+
+  const getEventsForDay = (day) => {
+    const targetDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    const dateString = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return events.filter(e => e.tanggal === dateString);
   };
 
   return (
@@ -80,6 +86,7 @@ export default function KalenderPage() {
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1;
                 const daySchedules = getSchedulesForDay(day);
+                const dayEvents = getEventsForDay(day);
                 const isToday = day === new Date().getDate() && currentMonth.getMonth() === new Date().getMonth() && currentMonth.getFullYear() === new Date().getFullYear();
 
                 return (
@@ -96,6 +103,15 @@ export default function KalenderPage() {
                     </div>
                     
                     <div className="space-y-1.5 overflow-y-auto max-h-[80px] pr-1 custom-scrollbar">
+                      {dayEvents.map(evt => (
+                        <div key={'evt-'+evt.id} className={`text-[10px] p-1.5 rounded border transition-colors ${
+                          evt.tipe === 'libur' ? 'bg-rose-50 border-rose-100 text-rose-700' :
+                          evt.tipe === 'kegiatan' ? 'bg-amber-50 border-amber-100 text-amber-700' :
+                          'bg-sky-50 border-sky-100 text-sky-700'
+                        }`}>
+                          <p className="font-bold truncate">{evt.nama}</p>
+                        </div>
+                      ))}
                       {daySchedules.map(sch => {
                         const student = SidanusDB.getStudent(sch.nim);
                         return (

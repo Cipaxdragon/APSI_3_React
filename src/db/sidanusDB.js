@@ -11,15 +11,16 @@ const KEYS = {
   SCHEDULES: 'sidanus_schedules',
   DOSEN: 'sidanus_dosen',
   RUANGAN: 'sidanus_ruangan',
+  EVENTS: 'sidanus_events',
 };
 
 const SEED_STUDENTS = [
   {
-    nim: '60900121034',
-    nama: 'Ahmad Fauzi Ramadhan',
+    nim: '60900121064',
+    nama: 'Ahmad Ghazali',
     prodi: 'Sistem Informasi',
     semester: 8,
-    email: 'ahmadffauzi@uin.ac.id',
+    email: 'ahmadghazali@uin.ac.id',
     hp: '082312345678',
     judul: 'Analisis Penerimaan Sistem ERP Menggunakan Metode Technology Acceptance Model (TAM) pada PT. Sinar Nusantara Makassar',
     abstrak: 'Penelitian ini bertujuan untuk menganalisis tingkat penerimaan sistem ERP pada PT. Sinar Nusantara Makassar menggunakan TAM.',
@@ -135,6 +136,37 @@ const SEED_RUANGAN = [
   { id: 'R005', nama: 'Ruang Sidang Dekanat Lt. 4', kapasitas: 15 },
 ];
 
+const SEED_ACADEMIC_EVENTS = [
+  // Januari - Mei
+  { id: 101, tanggal: '2026-01-01', nama: 'Tahun Baru Masehi', tipe: 'libur' },
+  { id: 102, tanggal: '2026-02-18', nama: 'Isra Mikraj', tipe: 'libur' },
+  { id: 103, tanggal: '2026-03-02', nama: 'Awal Perkuliahan Genap', tipe: 'akademik' },
+  { id: 104, tanggal: '2026-03-20', nama: 'Hari Raya Nyepi', tipe: 'libur' },
+  { id: 105, tanggal: '2026-04-10', nama: 'Hari Raya Idul Fitri', tipe: 'libur' },
+  { id: 106, tanggal: '2026-04-11', nama: 'Cuti Bersama Idul Fitri', tipe: 'libur' },
+  { id: 107, tanggal: '2026-05-01', nama: 'Hari Buruh Internasional', tipe: 'libur' },
+  { id: 108, tanggal: '2026-05-30', nama: 'Hari Raya Waisak', tipe: 'libur' },
+  
+  // Juni
+  { id: 1, tanggal: '2026-06-01', nama: 'Hari Lahir Pancasila', tipe: 'libur' },
+  { id: 2, tanggal: '2026-06-15', nama: 'Ujian Akhir Semester (UAS)', tipe: 'akademik' },
+  { id: 3, tanggal: '2026-06-16', nama: 'Ujian Akhir Semester (UAS)', tipe: 'akademik' },
+  { id: 4, tanggal: '2026-06-17', nama: 'Idul Adha 1447 H', tipe: 'libur' },
+  { id: 5, tanggal: '2026-06-25', nama: 'Pembekalan KKN', tipe: 'kegiatan' },
+  { id: 6, tanggal: '2026-06-27', nama: 'Wisuda Sarjana', tipe: 'kegiatan' },
+
+  // Juli - Desember
+  { id: 109, tanggal: '2026-07-15', nama: 'Tahun Baru Islam', tipe: 'libur' },
+  { id: 110, tanggal: '2026-07-20', nama: 'Registrasi Mahasiswa Baru', tipe: 'kegiatan' },
+  { id: 111, tanggal: '2026-08-17', nama: 'Hari Kemerdekaan RI', tipe: 'libur' },
+  { id: 112, tanggal: '2026-08-25', nama: 'PBAK Mahasiswa Baru', tipe: 'kegiatan' },
+  { id: 113, tanggal: '2026-09-01', nama: 'Awal Perkuliahan Ganjil', tipe: 'akademik' },
+  { id: 114, tanggal: '2026-09-15', nama: 'Maulid Nabi Muhammad SAW', tipe: 'libur' },
+  { id: 115, tanggal: '2026-10-19', nama: 'Ujian Tengah Semester (UTS)', tipe: 'akademik' },
+  { id: 116, tanggal: '2026-12-14', nama: 'UAS Ganjil', tipe: 'akademik' },
+  { id: 117, tanggal: '2026-12-25', nama: 'Hari Raya Natal', tipe: 'libur' },
+];
+
 const SEED_SCHEDULES = [
   {
     id: 'SCH-001',
@@ -166,6 +198,9 @@ function init() {
     localStorage.setItem(KEYS.DOSEN, JSON.stringify(SEED_DOSEN));
   if (!localStorage.getItem(KEYS.RUANGAN))
     localStorage.setItem(KEYS.RUANGAN, JSON.stringify(SEED_RUANGAN));
+    
+  // Force update events seed data for demo purposes
+  localStorage.setItem(KEYS.EVENTS, JSON.stringify(SEED_ACADEMIC_EVENTS));
 }
 
 function resetAll() {
@@ -469,4 +504,5 @@ export const SidanusDB = {
   getDosenList, addDosen, updateDosen, deleteDosen, 
   getRuanganList, addRuangan, updateRuangan, deleteRuangan, 
   suggestSchedule,
+  getAcademicEvents: () => { const d = localStorage.getItem(KEYS.EVENTS); return d ? JSON.parse(d) : []; },
 };
