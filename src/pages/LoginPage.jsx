@@ -19,7 +19,7 @@ export default function LoginPage() {
     }
 
     if (role === 'mahasiswa') {
-      const nim = username || '60900121034';
+      const nim = username || '60900121064';
       const student = SidanusDB.getStudent(nim);
       if (!student) {
         const allNims = SidanusDB.getStudents().map(s => `• ${s.nim} (${s.nama})`).join('\n');
@@ -35,7 +35,7 @@ export default function LoginPage() {
   };
 
   const handleDemoLogin = (demoRole) => {
-    const identifier = demoRole === 'mahasiswa' ? '60900121034' : demoRole;
+    const identifier = demoRole === 'mahasiswa' ? '60900121064' : demoRole;
     login(demoRole, identifier);
     navigate(`/${demoRole}/dashboard`);
   };
