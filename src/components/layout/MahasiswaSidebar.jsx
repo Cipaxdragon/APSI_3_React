@@ -38,12 +38,15 @@ export default function MahasiswaSidebar() {
   return (
     <>
       {/* Mobile Menu Button */}
-      <button 
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed bottom-6 right-6 z-[60] bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl hover:bg-emerald-700 transition-colors focus:outline-none"
-      >
-        {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
+      {!isMobileOpen && (
+        <button 
+          onClick={() => setIsMobileOpen(true)}
+          className="lg:hidden fixed top-3.5 left-3.5 z-[60] p-2 bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-colors focus:outline-none"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      )}
+
 
       {/* Backdrop */}
       {isMobileOpen && (
@@ -56,16 +59,21 @@ export default function MahasiswaSidebar() {
       {/* Sidebar */}
       <aside className={`w-64 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 left-0 z-50 h-screen transition-transform duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
       {/* Brand */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
-        <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 mr-3">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
+      <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0 justify-between">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 mr-3">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-sm font-bold text-slate-800 leading-tight">SIDANUS</h1>
+            <p className="text-[10px] text-slate-500 font-medium">Portal Mahasiswa</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-sm font-bold text-slate-800 leading-tight">SIDANUS</h1>
-          <p className="text-[10px] text-slate-500 font-medium">Portal Mahasiswa</p>
-        </div>
+        <button className="lg:hidden p-1 -mr-2 text-slate-400 hover:text-slate-600 focus:outline-none" onClick={() => setIsMobileOpen(false)}>
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* User Info */}

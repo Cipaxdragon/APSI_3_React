@@ -146,7 +146,7 @@ export default function LoginPage() {
           </div>
 
           {/* Demo Login Shortcuts */}
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <button onClick={() => handleDemoLogin('mahasiswa')} className="demo-badge-login flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-xl text-brand-700 text-xs font-semibold hover:bg-brand-100">
               <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6" />
@@ -165,7 +165,7 @@ export default function LoginPage() {
               </svg>
               Kaprodi
             </button>
-            <button onClick={() => handleDemoLogin('penguji')} className="demo-badge-login col-span-2 sm:col-span-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-rose-50 border border-rose-100 rounded-xl text-rose-700 text-xs font-semibold hover:bg-rose-100">
+            <button onClick={() => handleDemoLogin('penguji')} className="demo-badge-login flex items-center justify-center gap-2 px-3 py-2.5 bg-rose-50 border border-rose-100 rounded-xl text-rose-700 text-xs font-semibold hover:bg-rose-100">
               <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>

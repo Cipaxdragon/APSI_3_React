@@ -24,12 +24,14 @@ export default function KaprodiSidebar() {
   return (
     <>
       {/* Mobile Menu Button */}
-      <button 
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed bottom-6 right-6 z-[60] bg-amber-600 text-white p-3.5 rounded-full shadow-2xl hover:bg-amber-700 transition-colors focus:outline-none"
-      >
-        {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
+      {!isMobileOpen && (
+        <button 
+          onClick={() => setIsMobileOpen(true)}
+          className="lg:hidden fixed top-3.5 left-3.5 z-[60] p-2 bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-colors focus:outline-none"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Backdrop */}
       {isMobileOpen && (
@@ -41,16 +43,21 @@ export default function KaprodiSidebar() {
 
       {/* Sidebar */}
       <aside className={`w-64 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 left-0 z-50 h-screen transition-transform duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-      <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
-        <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600 mr-3">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
+      <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0 justify-between">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600 mr-3">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-sm font-bold text-slate-800 leading-tight">SIDANUS</h1>
+            <p className="text-[10px] text-slate-500 font-medium">Portal Kaprodi</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-sm font-bold text-slate-800 leading-tight">SIDANUS</h1>
-          <p className="text-[10px] text-slate-500 font-medium">Portal Kaprodi</p>
-        </div>
+        <button className="lg:hidden p-1 -mr-2 text-slate-400 hover:text-slate-600 focus:outline-none" onClick={() => setIsMobileOpen(false)}>
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       <nav className="flex-1 px-4 py-4 overflow-y-auto space-y-1 min-h-0">

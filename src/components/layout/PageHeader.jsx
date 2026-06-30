@@ -22,8 +22,8 @@ export default function PageHeader({ title }) {
   }
 
   return (
-    <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-8 sticky top-0 z-40">
-      <h2 className="text-lg font-bold text-slate-800">{title}</h2>
+    <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 lg:px-8 pl-14 lg:pl-8 sticky top-0 z-40">
+      <h2 className="text-base sm:text-lg font-bold text-slate-800 truncate pr-2">{title}</h2>
       <div className="flex items-center gap-4">
         {session?.role === 'mahasiswa' && (
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-full border border-emerald-100">

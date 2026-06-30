@@ -22,12 +22,14 @@ export default function PengujiSidebar() {
   return (
     <>
       {/* Mobile Menu Button */}
-      <button 
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed bottom-6 right-6 z-[60] bg-rose-600 text-white p-3.5 rounded-full shadow-2xl hover:bg-rose-700 transition-colors focus:outline-none"
-      >
-        {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
+      {!isMobileOpen && (
+        <button 
+          onClick={() => setIsMobileOpen(true)}
+          className="lg:hidden fixed top-3.5 left-3.5 z-[60] p-2 bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-colors focus:outline-none"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Backdrop */}
       {isMobileOpen && (
@@ -39,16 +41,21 @@ export default function PengujiSidebar() {
 
       {/* Sidebar */}
       <aside className={`w-64 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 left-0 z-50 h-screen transition-transform duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-      <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
-        <div className="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600 mr-3">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
+      <div className="h-16 flex items-center px-6 border-b border-slate-100 flex-shrink-0 justify-between">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600 mr-3">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-sm font-bold text-slate-800 leading-tight">SIDANUS</h1>
+            <p className="text-[10px] text-slate-500 font-medium">Portal Penguji</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-sm font-bold text-slate-800 leading-tight">SIDANUS</h1>
-          <p className="text-[10px] text-slate-500 font-medium">Portal Penguji</p>
-        </div>
+        <button className="lg:hidden p-1 -mr-2 text-slate-400 hover:text-slate-600 focus:outline-none" onClick={() => setIsMobileOpen(false)}>
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       <nav className="flex-1 px-4 py-4 overflow-y-auto space-y-1 min-h-0">
