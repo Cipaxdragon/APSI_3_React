@@ -33,7 +33,7 @@ export default function ProfilPage() {
       <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
         <PageHeader title="Profil & Keamanan" />
         
-        <main className="flex-1 p-4 sm:p-6 max-w-3xl">
+        <main className="flex-1 p-4 sm:p-6 max-w-3xl mx-auto w-full">
           <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-8">
             <div className="flex items-start gap-6 mb-8 pb-8 border-b border-slate-100 flex-col sm:flex-row">
               <div className="w-24 h-24 rounded-full bg-emerald-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shrink-0">

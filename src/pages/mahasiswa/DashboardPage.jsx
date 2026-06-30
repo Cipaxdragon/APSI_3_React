@@ -76,49 +76,112 @@ export default function MahasiswaDashboard() {
         <PageHeader title="Dashboard Mahasiswa" />
         
         <main className="flex-1 p-4 sm:p-6 space-y-6">
-          {/* Welcome Banner */}
-          <section className="bg-gradient-to-r from-emerald-700 to-emerald-600 rounded-2xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden">
-            {/* Dekorasi Background */}
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
-            
-            <p className="text-emerald-200 text-xs font-semibold uppercase tracking-wider mb-1 relative z-10">Selamat Datang,</p>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-1 relative z-10">
-              <h2 className="text-xl sm:text-2xl font-extrabold">{student.nama} 👋</h2>
-              <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold w-fit ${statusAkademik.color}`}>
-                <span>{statusAkademik.icon}</span>
-                {statusAkademik.label}
-              </div>
-            </div>
-            <p className="text-emerald-100 text-sm relative z-10">{student.nim} • {student.prodi}</p>
-            
-            <div className="mt-4 bg-white/10 border border-white/20 rounded-xl px-4 py-3 flex items-start gap-3 max-w-2xl relative z-10">
-              <svg className="w-4 h-4 text-emerald-200 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <div>
-                <p className="text-emerald-200 text-xs font-semibold uppercase tracking-wide mb-0.5">Judul Skripsi</p>
-                <p className="text-white text-xs sm:text-sm font-medium leading-relaxed italic">"{student.judul}"</p>
-              </div>
-            </div>
-            
-            <div className="mt-5 flex flex-wrap gap-2 relative z-10">
-              {!isProses && !isLulusTotal ? (
-                <Link to="/mahasiswa/daftar-ujian" className="inline-flex items-center gap-2 bg-white text-emerald-700 text-xs font-bold px-5 py-2.5 rounded-xl shadow hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                  Daftar Ujian Baru
-                </Link>
-              ) : (
-                <div className="inline-flex items-center gap-2 bg-emerald-800/40 text-emerald-100 border border-emerald-500/30 text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm cursor-not-allowed">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  {isLulusTotal ? 'Seluruh Ujian Selesai' : 'Pendaftaran Terkunci (Sedang Proses)'}
+          {/* Welcome / Schedule Banner */}
+          {currentSchedule ? (
+            <section className="bg-gradient-to-r from-blue-700 to-indigo-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-0 lg:divide-x lg:divide-white/10 items-stretch">
+                
+                {/* Kolom 1: Judul Ujian & Skripsi */}
+                <div className="flex flex-col justify-center lg:pr-8">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/40 border border-blue-400/40 rounded-full text-[10px] font-bold text-white uppercase tracking-wider mb-4 shadow-sm w-fit">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Jadwal Ditetapkan
+                  </div>
+                  
+                  <h2 className="text-3xl font-extrabold mb-3 text-white drop-shadow-sm leading-tight">
+                    {SidanusDB.getExamLabel(currentSchedule.jenisUjian)}
+                  </h2>
+                  <div className="flex gap-3 items-start bg-white/10 rounded-xl p-3.5 border border-white/20 shadow-inner">
+                    <svg className="w-5 h-5 text-blue-200 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    <p className="text-blue-50 font-medium italic text-sm leading-relaxed">"{student.judul}"</p>
+                  </div>
                 </div>
-              )}
-            </div>
-          </section>
+
+                {/* Kolom 2: Waktu & Ruangan */}
+                <div className="flex flex-col justify-center lg:px-8">
+                  <div className="mb-6">
+                    <p className="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-1.5">Pelaksanaan</p>
+                    <p className="font-extrabold text-2xl text-white tracking-tight leading-none mb-1">{SidanusDB.formatDate(currentSchedule.tanggal)}</p>
+                    <p className="text-sm font-semibold text-blue-100">{currentSchedule.jamMulai} - {currentSchedule.jamSelesai} WITA</p>
+                  </div>
+                  <div>
+                    <p className="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-1.5">Ruangan</p>
+                    <p className="font-bold text-white flex items-center gap-2 text-lg">
+                      <svg className="w-5 h-5 text-blue-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      {currentSchedule.ruangan}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Kolom 3: Majelis Penguji */}
+                <div className="flex flex-col justify-center lg:pl-8">
+                  <p className="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-4">Susunan Majelis Penguji</p>
+                  <ul className="space-y-3.5">
+                    {[
+                      { role: 'Ketua Sidang / Pembimbing 1', name: currentSchedule.ketuaSidang, initial: 'K' },
+                      { role: 'Sekretaris / Pembimbing 2', name: currentSchedule.sekretaris, initial: 'S' },
+                      { role: 'Penguji 1', name: currentSchedule.penguji1, initial: 'P1' },
+                      { role: 'Penguji 2', name: currentSchedule.penguji2, initial: 'P2' },
+                    ].map((p, idx) => p.name ? (
+                      <li key={idx} className="flex items-center gap-3.5">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/40 border border-blue-400/50 flex items-center justify-center text-xs font-extrabold text-white flex-shrink-0 shadow-sm">{p.initial}</div>
+                        <div>
+                          <p className="text-sm font-bold text-white leading-tight">{p.name}</p>
+                          <p className="text-[10px] font-semibold text-blue-200 mt-0.5">{p.role}</p>
+                        </div>
+                      </li>
+                    ) : null)}
+                  </ul>
+                </div>
+
+              </div>
+            </section>
+          ) : (
+            <section className="bg-gradient-to-r from-emerald-700 to-emerald-600 rounded-2xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden">
+              {/* Dekorasi Background */}
+              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <p className="text-emerald-200 text-xs font-semibold uppercase tracking-wider mb-1 relative z-10">Selamat Datang,</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-1 relative z-10">
+                <h2 className="text-xl sm:text-2xl font-extrabold">{student.nama} 👋</h2>
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold w-fit ${statusAkademik.color}`}>
+                  <span>{statusAkademik.icon}</span>
+                  {statusAkademik.label}
+                </div>
+              </div>
+              <p className="text-emerald-100 text-sm relative z-10">{student.nim} • {student.prodi}</p>
+              
+              <div className="mt-4 bg-white/10 border border-white/20 rounded-xl px-4 py-3 flex items-start gap-3 max-w-2xl relative z-10">
+                <svg className="w-4 h-4 text-emerald-200 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <div>
+                  <p className="text-emerald-200 text-xs font-semibold uppercase tracking-wide mb-0.5">Judul Skripsi</p>
+                  <p className="text-white text-xs sm:text-sm font-medium leading-relaxed italic">"{student.judul}"</p>
+                </div>
+              </div>
+              
+              <div className="mt-5 flex flex-wrap gap-2 relative z-10">
+                {!isProses && !isLulusTotal ? (
+                  <Link to="/mahasiswa/daftar-ujian" className="inline-flex items-center gap-2 bg-white text-emerald-700 text-xs font-bold px-5 py-2.5 rounded-xl shadow hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Daftar Ujian Baru
+                  </Link>
+                ) : (
+                  <div className="inline-flex items-center gap-2 bg-emerald-800/40 text-emerald-100 border border-emerald-500/30 text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm cursor-not-allowed">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    {isLulusTotal ? 'Seluruh Ujian Selesai' : 'Pendaftaran Terkunci (Sedang Proses)'}
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
 
           {/* Status Cards */}
           <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">

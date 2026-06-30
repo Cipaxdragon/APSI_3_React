@@ -7,8 +7,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
   
-  const [role, setRole] = useState('mahasiswa');
-  const [username, setUsername] = useState('');
+  const [role, setRole] = useState(localStorage.getItem('lastRole') || 'mahasiswa');
+  const [username, setUsername] = useState(localStorage.getItem('lastUsername') || '');
   const [password, setPassword] = useState('');
 
   const handleLogin = (e) => {
@@ -27,9 +27,13 @@ export default function LoginPage() {
         return;
       }
       login('mahasiswa', nim);
+      localStorage.setItem('lastRole', 'mahasiswa');
+      localStorage.setItem('lastUsername', nim);
       navigate('/mahasiswa/dashboard');
     } else {
       login(role, username || role);
+      localStorage.setItem('lastRole', role);
+      localStorage.setItem('lastUsername', username || role);
       navigate(`/${role}/dashboard`);
     }
   };
@@ -37,6 +41,8 @@ export default function LoginPage() {
   const handleDemoLogin = (demoRole) => {
     const identifier = demoRole === 'mahasiswa' ? '60900121064' : demoRole;
     login(demoRole, identifier);
+    localStorage.setItem('lastRole', demoRole);
+    localStorage.setItem('lastUsername', identifier);
     navigate(`/${demoRole}/dashboard`);
   };
 
