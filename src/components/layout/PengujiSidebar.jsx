@@ -10,10 +10,8 @@ export default function PengujiSidebar() {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    if(window.confirm('Yakin ingin keluar?')) {
-      logout();
-      navigate('/');
-    }
+    logout();
+    navigate('/');
   };
 
   const navItems = [
