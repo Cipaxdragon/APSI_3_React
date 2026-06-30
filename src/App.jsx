@@ -11,7 +11,10 @@ import SKKelulusanPage from './pages/mahasiswa/SKKelulusanPage';
 import AdminDashboard from './pages/admin/DashboardPage';
 import AdminPenjadwalan from './pages/admin/PenjadwalanPage';
 import AdminDatabase from './pages/admin/DatabasePage';
+import AdminKalender from './pages/admin/KalenderPage';
 import KaprodiDashboard from './pages/kaprodi/DashboardPage';
+import KaprodiRiwayat from './pages/kaprodi/RiwayatPage';
+import KaprodiKalender from './pages/kaprodi/KalenderPage';
 import PengujiDashboard from './pages/penguji/DashboardPage';
 import JadwalPublik from './pages/JadwalPublikPage';
 
@@ -53,12 +56,15 @@ function App() {
         <Route element={<AuthGuard role="admin" />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/penjadwalan" element={<AdminPenjadwalan />} />
+          <Route path="/admin/kalender" element={<AdminKalender />} />
           <Route path="/admin/database" element={<AdminDatabase />} />
         </Route>
 
         {/* Kaprodi Routes */}
         <Route element={<AuthGuard role="kaprodi" />}>
           <Route path="/kaprodi/dashboard" element={<KaprodiDashboard />} />
+          <Route path="/kaprodi/riwayat" element={<KaprodiRiwayat />} />
+          <Route path="/kaprodi/kalender" element={<KaprodiKalender />} />
         </Route>
 
         {/* Penguji Routes */}

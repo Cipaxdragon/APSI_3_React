@@ -113,7 +113,8 @@ export default function AdminDashboardPage() {
                     const uploadedCount = requirements.filter(r => reg.berkas?.[r.key] && typeof reg.berkas[r.key] === 'object').length;
                     const totalReq = requirements.length;
                     const isDisetujui = reg.statusVerifikasi === 'disetujui';
-                    const hasSchedule = SidanusDB.getSchedules().some(s => s.registrationId === reg.id);
+                    const hasActiveSchedule = SidanusDB.getSchedules().some(s => s.registrationId === reg.id && s.statusKaprodi !== 'ditolak');
+                    const rejectedSchedule = SidanusDB.getSchedules().slice().reverse().find(s => s.registrationId === reg.id && s.statusKaprodi === 'ditolak');
                     
                     return (
                       <tr key={reg.id} className="hover:bg-slate-50 transition-colors">
@@ -147,12 +148,28 @@ export default function AdminDashboardPage() {
                         <td className="px-5 py-4 text-center">
                           {reg.statusVerifikasi === 'menunggu' ? (
                             <div className="flex justify-center gap-2">
-                              <button onClick={() => handleVerify(reg.id, 'disetujui')} className="text-xs font-bold text-emerald-600 hover:underline">Setujui</button>
-                              <button onClick={() => handleTolak(reg.id)} className="text-xs font-bold text-rose-600 hover:underline">Tolak</button>
+                              <button onClick={() => handleVerify(reg.id, 'disetujui')} className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition-colors shadow-sm">
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" /></svg>
+                                Setujui
+                              </button>
+                              <button onClick={() => handleTolak(reg.id)} className="flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1.5 rounded-lg transition-colors shadow-sm">
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+                                Tolak
+                              </button>
                             </div>
-                          ) : isDisetujui && !hasSchedule ? (
-                            <Link to="/admin/penjadwalan" className="text-xs font-bold text-violet-600 hover:underline">📅 Jadwalkan</Link>
-                          ) : isDisetujui && hasSchedule ? (
+                          ) : isDisetujui && !hasActiveSchedule ? (
+                            <div className="flex flex-col items-center gap-1.5">
+                              {rejectedSchedule && (
+                                <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full flex items-center gap-1 cursor-help" title={`Alasan Penolakan: ${rejectedSchedule.catatanKaprodi}`}>
+                                  ⚠️ Jadwal Ditolak
+                                </span>
+                              )}
+                              <Link to="/admin/penjadwalan" className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-200 px-3 py-1.5 rounded-lg transition-colors shadow-sm">
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                {rejectedSchedule ? 'Jadwalkan Ulang' : 'Jadwalkan'}
+                              </Link>
+                            </div>
+                          ) : isDisetujui && hasActiveSchedule ? (
                             <span className="text-xs font-bold text-slate-400">✓ Dijadwalkan</span>
                           ) : (
                             <span className="text-xs text-slate-400">Selesai</span>

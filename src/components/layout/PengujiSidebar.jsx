@@ -18,8 +18,6 @@ export default function PengujiSidebar() {
 
   const navItems = [
     { label: 'Jadwal Menguji', path: '/penguji/dashboard', icon: Home },
-    { label: 'Input Nilai', path: '#', icon: Edit3 },
-    { label: 'Pengaturan', path: '#', icon: Settings },
   ];
 
   return (

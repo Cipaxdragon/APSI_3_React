@@ -13,17 +13,29 @@ export default function KaprodiDashboardPage() {
   const antrian = schedules.filter(s => s.statusKaprodi === 'menunggu');
   const disetujui = schedules.filter(s => s.statusKaprodi === 'disetujui');
 
+  const [rejectModal, setRejectModal] = useState({ open: false, schId: null, catatan: '' });
+
   const handleVerify = (id, newStatus) => {
+    if (newStatus === 'ditolak') {
+      setRejectModal({ open: true, schId: id, catatan: '' });
+      return;
+    }
     SidanusDB.updateSchedule(id, { statusKaprodi: newStatus });
     setSchedules(SidanusDB.getSchedules());
-    // Also update student status if disetujui
-    if (newStatus === 'disetujui') {
-      const schedule = schedules.find(s => s.id === id);
-      if (schedule) {
-        // Find registration and update its status too maybe? 
-        // Not strictly needed since schedule being approved implies it.
-      }
+  };
+
+  const handleTolakSubmit = (e) => {
+    e.preventDefault();
+    if (!rejectModal.catatan.trim()) {
+      alert('Harap isi alasan penolakan.');
+      return;
     }
+    SidanusDB.updateSchedule(rejectModal.schId, { 
+      statusKaprodi: 'ditolak', 
+      catatanKaprodi: rejectModal.catatan 
+    });
+    setSchedules(SidanusDB.getSchedules());
+    setRejectModal({ open: false, schId: null, catatan: '' });
   };
 
   return (
@@ -32,6 +44,35 @@ export default function KaprodiDashboardPage() {
       <div className="lg:ml-64 flex-1 flex flex-col min-w-0">
         <PageHeader title="Persetujuan Jadwal Ujian" />
         
+        {/* Modal Tolak */}
+        {rejectModal.open && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+              <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="font-bold text-slate-800">Tolak Jadwal</h3>
+                <button onClick={() => setRejectModal({ open: false, schId: null, catatan: '' })} className="text-slate-400 hover:text-slate-600">✕</button>
+              </div>
+              <form onSubmit={handleTolakSubmit} className="p-5 space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Alasan Penolakan</label>
+                  <textarea
+                    rows="3"
+                    value={rejectModal.catatan}
+                    onChange={e => setRejectModal({...rejectModal, catatan: e.target.value})}
+                    placeholder="Contoh: Dosen penguji 2 sedang cuti, mohon ganti dosen..."
+                    className="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-rose-100 focus:border-rose-400 outline-none"
+                    required
+                  ></textarea>
+                </div>
+                <div className="flex gap-3">
+                  <button type="button" onClick={() => setRejectModal({ open: false, schId: null, catatan: '' })} className="flex-1 px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-200">Batal</button>
+                  <button type="submit" className="flex-1 px-4 py-2 bg-rose-600 text-white font-bold rounded-xl text-sm hover:bg-rose-700">Kirim Penolakan</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
         <main className="flex-1 p-4 sm:p-6 space-y-6">
           <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">

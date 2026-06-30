@@ -18,9 +18,8 @@ export default function KaprodiSidebar() {
 
   const navItems = [
     { label: 'Persetujuan Jadwal', path: '/kaprodi/dashboard', icon: Home },
-    { label: 'Riwayat Persetujuan', path: '#', icon: ClipboardCheck },
-    { label: 'Kalender Akademik', path: '#', icon: CalendarCheck },
-    { label: 'Pengaturan', path: '#', icon: Settings },
+    { label: 'Riwayat Persetujuan', path: '/kaprodi/riwayat', icon: ClipboardCheck },
+    { label: 'Kalender Akademik', path: '/kaprodi/kalender', icon: CalendarCheck },
   ];
 
   return (

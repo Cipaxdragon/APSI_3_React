@@ -18,7 +18,7 @@ export default function PenjadwalanPage() {
 
   const antrian = registrations.filter(reg =>
     reg.statusVerifikasi === 'disetujui' &&
-    !schedules.some(s => s.registrationId === reg.id)
+    !schedules.some(s => s.registrationId === reg.id && s.statusKaprodi !== 'ditolak')
   );
 
   const [selectedRegId, setSelectedRegId] = useState('');
@@ -27,6 +27,7 @@ export default function PenjadwalanPage() {
 
   const selectedReg = antrian.find(r => r.id === selectedRegId);
   const selectedStudent = selectedReg ? SidanusDB.getStudent(selectedReg.nim) : null;
+  const rejectedSchedule = selectedReg ? SidanusDB.getSchedules().slice().reverse().find(s => s.registrationId === selectedReg.id && s.statusKaprodi === 'ditolak') : null;
 
   const handleAutoSuggest = (regId) => {
     const reg = antrian.find(r => r.id === regId);
@@ -175,6 +176,17 @@ export default function PenjadwalanPage() {
               <div className="mb-5 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800">
                 <p className="font-bold mb-1">⚡ Auto-Suggest Aktif</p>
                 <p>Sistem telah mengisi jadwal berdasarkan: data pembimbing mahasiswa, ketersediaan dosen pada tanggal yang dipilih, dan ruangan pertama yang tersedia. Anda masih dapat mengubah field secara manual.</p>
+              </div>
+            )}
+
+            {rejectedSchedule && selectedRegId && (
+              <div className="mb-5 p-4 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 shadow-sm">
+                <p className="font-bold mb-1.5 flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                  Jadwal Sebelumnya Ditolak Kaprodi
+                </p>
+                <p className="italic leading-relaxed mb-2 text-rose-900 bg-rose-100/50 p-2 rounded border border-rose-100/50">"{rejectedSchedule.catatanKaprodi}"</p>
+                <p className="opacity-80">Harap atur ulang jadwal (waktu, penguji, atau ruangan) dengan mempertimbangkan catatan penolakan di atas.</p>
               </div>
             )}
             

@@ -209,7 +209,6 @@ export default function PengujiDashboardPage() {
 function NilaiModal({ modal, onClose, onSubmit }) {
   const [nilai, setNilai] = useState('A');
   const [catatan, setCatatan] = useState('');
-  const [perluRevisi, setPerluRevisi] = useState(false);
 
   if (!modal.open || !modal.sch) return null;
   const sch = modal.sch;
@@ -218,10 +217,9 @@ function NilaiModal({ modal, onClose, onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!window.confirm(`Konfirmasi: Selesaikan ujian ${SidanusDB.getExamLabel(sch.jenisUjian)} untuk ${student?.nama} dengan nilai ${nilai}?`)) return;
-    onSubmit(sch, { nilai, catatan, perluRevisi });
+    onSubmit(sch, { nilai, catatan, perluRevisi: false });
     setNilai('A');
     setCatatan('');
-    setPerluRevisi(false);
   };
 
   const nilaiOptions = [
@@ -285,19 +283,6 @@ function NilaiModal({ modal, onClose, onSubmit }) {
             />
           </div>
 
-          {/* Perlu Revisi toggle */}
-          <label className="flex items-center gap-3 cursor-pointer p-3 bg-amber-50 border border-amber-200 rounded-xl">
-            <div
-              onClick={() => setPerluRevisi(!perluRevisi)}
-              className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${perluRevisi ? 'bg-amber-500' : 'bg-slate-200'}`}
-            >
-              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${perluRevisi ? 'translate-x-5' : 'translate-x-0'}`} />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-amber-800">Wajib Revisi Skripsi</p>
-              <p className="text-xs text-amber-600">Mahasiswa perlu memperbaiki skripsi sebelum pengesahan</p>
-            </div>
-          </label>
 
           {/* Actions */}
           <div className="flex gap-3 pt-2">

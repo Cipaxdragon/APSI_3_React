@@ -194,14 +194,14 @@ export default function MahasiswaDashboard() {
                   <p className="text-slate-400 text-sm py-4">Belum ada pengumuman kelulusan.</p>
                 )}
 
-                {/* Tampilkan catatan revisi dari penguji jika ada di jadwal terakhir */}
-                {latestCompletedSchedule?.perluRevisi && latestCompletedSchedule.catatanPenguji && (
-                  <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <p className="text-xs font-bold text-amber-800 mb-2 flex items-center gap-1.5">
+                {/* Tampilkan catatan dari penguji jika ada (baik wajib revisi maupun sekadar pesan) */}
+                {latestCompletedSchedule?.catatanPenguji && (
+                  <div className={`mt-4 border rounded-xl p-4 ${latestCompletedSchedule.perluRevisi ? 'bg-amber-50 border-amber-200' : 'bg-blue-50 border-blue-200'}`}>
+                    <p className={`text-xs font-bold mb-2 flex items-center gap-1.5 ${latestCompletedSchedule.perluRevisi ? 'text-amber-800' : 'text-blue-800'}`}>
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                      Catatan Revisi Penguji
+                      {latestCompletedSchedule.perluRevisi ? 'Catatan Revisi Wajib' : 'Catatan / Pesan Penguji'}
                     </p>
-                    <p className="text-sm text-amber-900 leading-relaxed italic">"{latestCompletedSchedule.catatanPenguji}"</p>
+                    <p className={`text-sm leading-relaxed italic ${latestCompletedSchedule.perluRevisi ? 'text-amber-900' : 'text-blue-900'}`}>"{latestCompletedSchedule.catatanPenguji}"</p>
                   </div>
                 )}
               </section>
@@ -268,16 +268,17 @@ function Timeline({ student, registrations }) {
     { label: 'Pelaksanaan Ujian', status: 'pending', desc: 'Menunggu hasil pengujian' },
   ];
 
+  let latestSchedule = null;
   if (!isReturned) {
-    const schedule = SidanusDB.getSchedules().find(s => s.registrationId === activeReg.id);
-    if (schedule || isFinished) {
+    latestSchedule = SidanusDB.getSchedules().slice().reverse().find(s => s.registrationId === activeReg.id);
+    if (latestSchedule || isFinished) {
       steps[2].status = 'done'; steps[2].desc = 'Jadwal ditetapkan';
       
-      if (isFinished || schedule?.statusKaprodi === 'disetujui' || schedule?.statusKaprodi === 'selesai') {
+      if (isFinished || latestSchedule?.statusKaprodi === 'disetujui' || latestSchedule?.statusKaprodi === 'selesai') {
         steps[3].status = 'done'; steps[3].desc = 'Disetujui Kaprodi';
         steps[4].status = isFinished ? 'done' : 'active';
         steps[4].desc = isFinished ? 'Lulus Ujian 🎉' : 'Menunggu pelaksanaan ujian';
-      } else if (schedule?.statusKaprodi === 'ditolak') {
+      } else if (latestSchedule?.statusKaprodi === 'ditolak') {
         steps[3].status = 'error'; steps[3].desc = 'Ditolak Kaprodi';
       } else {
         steps[3].status = 'active'; steps[3].desc = 'Menunggu Kaprodi';
@@ -308,6 +309,13 @@ function Timeline({ student, registrations }) {
                 <div className="mt-2 bg-rose-50 border border-rose-100 rounded-lg p-3 text-xs text-rose-700">
                   <span className="font-bold block mb-1">Catatan Admin:</span>
                   {activeReg.catatanAdmin}
+                </div>
+              )}
+              {step.status === 'error' && latestSchedule?.catatanKaprodi && idx === 3 && (
+                <div className="mt-2 bg-rose-50 border border-rose-100 rounded-lg p-3 text-xs text-rose-700">
+                  <span className="font-bold block mb-1">Catatan Kaprodi:</span>
+                  {latestSchedule.catatanKaprodi}
+                  <p className="mt-1.5 italic opacity-80">Admin prodi akan segera mengatur ulang jadwal sidang Anda berdasarkan catatan di atas. Harap menunggu jadwal baru.</p>
                 </div>
               )}
             </div>

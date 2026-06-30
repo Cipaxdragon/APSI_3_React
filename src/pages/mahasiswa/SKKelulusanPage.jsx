@@ -11,7 +11,7 @@ export default function SKKelulusanPage() {
   
   if (!student) return null;
 
-  const isLulus = student.statusUjian === 'hasil_selesai'; // Dalam konteks demo ini hasil_selesai dianggap lulus munaqasyah
+  const isLulus = student.statusUjian === 'lulus';
   
   return (
     <div className="flex bg-slate-50 min-h-screen">
