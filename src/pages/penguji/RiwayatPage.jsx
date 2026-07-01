@@ -15,12 +15,19 @@ export default function PengujiRiwayatPage() {
 
   const pengujiName = session.identifier === 'penguji' ? 'Faisal Akib, S.Kom., M.Kom.' : session.identifier;
 
+  const hasFinished = (sch) => {
+    return (sch.penguji1 === pengujiName && sch.statusPenguji1 === 'selesai') ||
+           (sch.penguji2 === pengujiName && sch.statusPenguji2 === 'selesai') ||
+           (sch.ketuaSidang === pengujiName && sch.statusKetua === 'selesai') ||
+           (sch.sekretaris === pengujiName && sch.statusSekretaris === 'selesai');
+  };
+
   const completedSchedules = schedules.filter(sch =>
-    sch.statusKaprodi === 'selesai' &&
-    (sch.ketuaSidang?.includes(pengujiName) ||
-     sch.sekretaris?.includes(pengujiName) ||
-     sch.penguji1?.includes(pengujiName) ||
-     sch.penguji2?.includes(pengujiName))
+    (sch.statusKaprodi === 'selesai' || hasFinished(sch)) &&
+    (sch.ketuaSidang === pengujiName ||
+     sch.sekretaris === pengujiName ||
+     sch.penguji1 === pengujiName ||
+     sch.penguji2 === pengujiName)
   );
 
   return (
@@ -43,6 +50,14 @@ export default function PengujiRiwayatPage() {
             <div className="divide-y divide-slate-100">
               {completedSchedules.map(sch => {
                 const student = SidanusDB.getStudent(sch.nim);
+                let myCatatan = '';
+                let myNilai = '';
+                
+                if (sch.penguji1 === pengujiName) { myCatatan = sch.catatanPenguji1; myNilai = sch.nilaiPenguji1; }
+                else if (sch.penguji2 === pengujiName) { myCatatan = sch.catatanPenguji2; myNilai = sch.nilaiPenguji2; }
+                else if (sch.ketuaSidang === pengujiName) { myCatatan = sch.catatanKetua; }
+                else if (sch.sekretaris === pengujiName) { myCatatan = sch.catatanSekretaris; }
+
                 return (
                   <div key={sch.id} className="px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                     <div className="flex items-center gap-4">
@@ -52,12 +67,17 @@ export default function PengujiRiwayatPage() {
                       <div>
                         <p className="font-bold text-slate-800 text-sm">{student?.nama}</p>
                         <p className="text-xs text-slate-500">{SidanusDB.getExamLabel(sch.jenisUjian)} · {SidanusDB.formatDate(sch.tanggal)}</p>
-                        {sch.catatanPenguji && <p className="text-xs text-slate-400 italic mt-0.5">"{sch.catatanPenguji}"</p>}
+                        {myCatatan && <p className="text-xs text-slate-400 italic mt-1">"{myCatatan}"</p>}
                       </div>
                     </div>
                     <div className="text-right">
-                      {sch.nilai && <p className="text-lg font-extrabold text-emerald-600">{sch.nilai}</p>}
-                      {sch.perluRevisi && <p className="text-[10px] text-amber-600 font-bold bg-amber-100 px-2 py-0.5 rounded-full mt-1 inline-block">Perlu Revisi</p>}
+                        {sch.statusKaprodi !== 'selesai' ? (
+                          <p className="text-[10px] text-amber-600 font-bold bg-amber-100 px-2 py-0.5 rounded-full mt-1 inline-block">Menunggu Penguji Lain</p>
+                        ) : (
+                          <>
+                            {myNilai && <p className="text-lg font-extrabold text-emerald-600">{myNilai}</p>}
+                          </>
+                        )}
                     </div>
                   </div>
                 );

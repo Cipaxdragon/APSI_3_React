@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MahasiswaSidebar from '../../components/layout/MahasiswaSidebar';
 import PageHeader from '../../components/layout/PageHeader';
@@ -22,7 +22,13 @@ export default function DaftarUjianPage() {
   
   const nextExamType = SidanusDB.getNextExamType(student?.nim);
   const [jenisUjian] = useState(nextExamType || '');
-  const [judul, setJudul] = useState(student?.judul || '');
+  const [judul, setJudul] = useState('');
+
+  useEffect(() => {
+    if (student) {
+      setJudul(student.judul || '');
+    }
+  }, [student]);
   const [agreed1, setAgreed1] = useState(false);
   const [agreed2, setAgreed2] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState({});
@@ -169,7 +175,7 @@ export default function DaftarUjianPage() {
       SidanusDB.updateStudent(student.nim, { judul });
     }
 
-    alert('✅ Pendaftaran berhasil dikirim! Admin akan segera memverifikasi berkas Anda.');
+    alert(`Pendaftaran ujian ${SidanusDB.getExamLabel(nextExamType)} berhasil diajukan! Menunggu verifikasi prodi.`);
     navigate('/mahasiswa/dashboard');
   };
 
@@ -253,10 +259,21 @@ export default function DaftarUjianPage() {
             <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6">
               <h2 className="font-bold text-slate-800 mb-5 flex items-center gap-2">
                 <span className="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center text-xs font-extrabold">3</span>
-                Judul Penelitian <span className="text-emerald-600 text-[10px] ml-2 px-2 py-0.5 bg-emerald-100 rounded-full">Terkunci (Sah)</span>
+                Judul Penelitian 
+                {nextExamType !== 'hasil' && <span className="text-emerald-600 text-[10px] ml-2 px-2 py-0.5 bg-emerald-100 rounded-full">Terkunci (Sah)</span>}
               </h2>
-              <textarea rows="3" value={judul} readOnly disabled className="input-style resize-none w-full bg-slate-100 text-slate-600 cursor-not-allowed border-slate-200 shadow-none" placeholder="Masukkan judul penelitian Anda..." />
-              <p className="text-xs text-slate-400 mt-2 font-medium">Pastikan judul sudah sesuai dengan yang disetujui pembimbing.</p>
+              <textarea 
+                rows="3" 
+                value={judul} 
+                onChange={e => setJudul(e.target.value)}
+                readOnly={nextExamType !== 'hasil'} 
+                disabled={nextExamType !== 'hasil'} 
+                className={`input-style resize-none w-full ${nextExamType !== 'hasil' ? 'bg-slate-100 text-slate-600 cursor-not-allowed border-slate-200 shadow-none' : ''}`} 
+                placeholder="Masukkan judul penelitian Anda..." 
+              />
+              <p className="text-xs text-slate-400 mt-2 font-medium">
+                {nextExamType === 'hasil' ? 'Anda dapat melakukan revisi atau penyesuaian judul penelitian jika diperlukan.' : 'Pastikan judul sudah sesuai dengan yang disetujui pembimbing.'}
+              </p>
             </section>
 
             {/* Seksi 4: Upload Berkas */}

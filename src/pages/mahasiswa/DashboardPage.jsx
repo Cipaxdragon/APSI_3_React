@@ -136,8 +136,35 @@ export default function MahasiswaDashboard() {
                     ) : null)}
                   </ul>
                 </div>
-
               </div>
+              
+              {/* Tampilkan Update Realtime Catatan Penguji */}
+              {(currentSchedule.catatanPenguji1 || currentSchedule.catatanPenguji2) && (
+                <div className="relative z-10 mt-8 pt-6 border-t border-white/10">
+                  <p className="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                    Live: Update Penilaian Dosen Masuk
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {currentSchedule.catatanPenguji1 && (
+                      <div className="bg-white/10 border border-white/20 rounded-xl p-4 shadow-sm">
+                        <p className="text-xs font-bold mb-1 flex items-center gap-1.5 text-blue-100">
+                          Dari Penguji 1 ({currentSchedule.penguji1})
+                        </p>
+                        <p className="text-sm leading-relaxed italic text-white">"{currentSchedule.catatanPenguji1}"</p>
+                      </div>
+                    )}
+                    {currentSchedule.catatanPenguji2 && (
+                      <div className="bg-white/10 border border-white/20 rounded-xl p-4 shadow-sm">
+                        <p className="text-xs font-bold mb-1 flex items-center gap-1.5 text-blue-100">
+                          Dari Penguji 2 ({currentSchedule.penguji2})
+                        </p>
+                        <p className="text-sm leading-relaxed italic text-white">"{currentSchedule.catatanPenguji2}"</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </section>
           ) : (
             <section className="bg-gradient-to-r from-emerald-700 to-emerald-600 rounded-2xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden">
@@ -307,14 +334,27 @@ export default function MahasiswaDashboard() {
                   <p className="text-slate-400 text-sm py-4">Belum ada pengumuman kelulusan.</p>
                 )}
 
-                {/* Tampilkan catatan dari penguji jika ada (baik wajib revisi maupun sekadar pesan) */}
-                {latestCompletedSchedule?.catatanPenguji && (
-                  <div className={`mt-4 border rounded-xl p-4 ${latestCompletedSchedule.perluRevisi ? 'bg-amber-50 border-amber-200' : 'bg-blue-50 border-blue-200'}`}>
-                    <p className={`text-xs font-bold mb-2 flex items-center gap-1.5 ${latestCompletedSchedule.perluRevisi ? 'text-amber-800' : 'text-blue-800'}`}>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                      {latestCompletedSchedule.perluRevisi ? 'Catatan Revisi Wajib' : 'Catatan / Pesan Penguji'}
-                    </p>
-                    <p className={`text-sm leading-relaxed italic ${latestCompletedSchedule.perluRevisi ? 'text-amber-900' : 'text-blue-900'}`}>"{latestCompletedSchedule.catatanPenguji}"</p>
+                {/* Tampilkan catatan dari penguji 1 dan 2 */}
+                {(latestCompletedSchedule?.catatanPenguji1 || latestCompletedSchedule?.catatanPenguji2) && (
+                  <div className="mt-4 space-y-3">
+                    {latestCompletedSchedule?.catatanPenguji1 && (
+                      <div className="border rounded-xl p-4 bg-blue-50 border-blue-200">
+                        <p className="text-xs font-bold mb-2 flex items-center gap-1.5 text-blue-800">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                          Catatan Penguji 1 ({latestCompletedSchedule.penguji1})
+                        </p>
+                        <p className="text-sm leading-relaxed italic text-blue-900">"{latestCompletedSchedule.catatanPenguji1}"</p>
+                      </div>
+                    )}
+                    {latestCompletedSchedule?.catatanPenguji2 && (
+                      <div className="border rounded-xl p-4 bg-blue-50 border-blue-200">
+                        <p className="text-xs font-bold mb-2 flex items-center gap-1.5 text-blue-800">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                          Catatan Penguji 2 ({latestCompletedSchedule.penguji2})
+                        </p>
+                        <p className="text-sm leading-relaxed italic text-blue-900">"{latestCompletedSchedule.catatanPenguji2}"</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </section>

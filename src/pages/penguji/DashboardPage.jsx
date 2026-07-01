@@ -16,42 +16,72 @@ export default function PengujiDashboardPage() {
   // Untuk demo, fallback ke dosen yang ada di seed
   const pengujiName = session.identifier === 'penguji' ? 'Faisal Akib, S.Kom., M.Kom.' : session.identifier;
 
+  const hasFinished = (sch) => {
+    return (sch.penguji1 === pengujiName && sch.statusPenguji1 === 'selesai') ||
+           (sch.penguji2 === pengujiName && sch.statusPenguji2 === 'selesai') ||
+           (sch.ketuaSidang === pengujiName && sch.statusKetua === 'selesai') ||
+           (sch.sekretaris === pengujiName && sch.statusSekretaris === 'selesai');
+  };
+
   const mySchedules = schedules.filter(sch =>
-    sch.statusKaprodi === 'disetujui' &&
-    (sch.ketuaSidang?.includes(pengujiName) ||
-     sch.sekretaris?.includes(pengujiName) ||
-     sch.penguji1?.includes(pengujiName) ||
-     sch.penguji2?.includes(pengujiName))
+    sch.statusKaprodi === 'disetujui' && !hasFinished(sch) &&
+    (sch.ketuaSidang === pengujiName ||
+     sch.sekretaris === pengujiName ||
+     sch.penguji1 === pengujiName ||
+     sch.penguji2 === pengujiName)
   );
 
 
 
-  const handleSelesaikanUjian = (sch, { nilai, catatan, perluRevisi }) => {
+  const handleSelesaikanUjian = (sch, { nilai, catatan }) => {
     const student = SidanusDB.getStudent(sch.nim);
     if (!student) return;
 
-    const newStatus =
-      sch.jenisUjian === 'proposal' ? 'proposal_selesai'
-      : sch.jenisUjian === 'hasil' ? 'hasil_selesai'
-      : 'lulus';
-
-    SidanusDB.updateStudent(sch.nim, { statusUjian: newStatus });
-
-    if (sch.registrationId) {
-      SidanusDB.updateRegistration(sch.registrationId, { statusVerifikasi: 'lulus' });
+    const updatedSch = { ...sch };
+    if (sch.penguji1 === pengujiName) {
+      updatedSch.statusPenguji1 = 'selesai';
+      updatedSch.nilaiPenguji1 = nilai;
+      updatedSch.catatanPenguji1 = catatan;
+    } else if (sch.penguji2 === pengujiName) {
+      updatedSch.statusPenguji2 = 'selesai';
+      updatedSch.nilaiPenguji2 = nilai;
+      updatedSch.catatanPenguji2 = catatan;
+    } else if (sch.ketuaSidang === pengujiName) {
+      updatedSch.statusKetua = 'selesai';
+      updatedSch.catatanKetua = catatan;
+    } else if (sch.sekretaris === pengujiName) {
+      updatedSch.statusSekretaris = 'selesai';
+      updatedSch.catatanSekretaris = catatan;
     }
 
-    SidanusDB.updateSchedule(sch.id, {
-      statusKaprodi: 'selesai',
-      nilai,
-      catatanPenguji: catatan,
-      perluRevisi,
-      tanggalSelesai: new Date().toISOString(),
-    });
+    // Check if both Penguji 1 and 2 are finished (Ketua & Sekretaris optional for completion lock)
+    const isBothDone = updatedSch.statusPenguji1 === 'selesai' && updatedSch.statusPenguji2 === 'selesai';
+
+    SidanusDB.updateSchedule(sch.id, updatedSch);
+
+    if (isBothDone) {
+      const newStatus =
+        sch.jenisUjian === 'proposal' ? 'proposal_selesai'
+        : sch.jenisUjian === 'hasil' ? 'hasil_selesai'
+        : 'lulus';
+
+      SidanusDB.updateStudent(sch.nim, { statusUjian: newStatus });
+
+      if (sch.registrationId) {
+        SidanusDB.updateRegistration(sch.registrationId, { statusVerifikasi: 'lulus' });
+      }
+
+      SidanusDB.updateSchedule(sch.id, {
+        statusKaprodi: 'selesai',
+        tanggalSelesai: new Date().toISOString(),
+      });
+      alert(`✅ Ujian ${SidanusDB.getExamLabel(sch.jenisUjian)} untuk ${student.nama} telah diselesaikan sepenuhnya!`);
+    } else {
+      alert(`✅ Input Anda berhasil disimpan. Menunggu penguji lain untuk menyelesaikan ujian ini.`);
+    }
 
     setSchedules(SidanusDB.getSchedules());
     setNilaiModal({ open: false, sch: null });
-    alert(`✅ Ujian ${SidanusDB.getExamLabel(sch.jenisUjian)} untuk ${student.nama} telah diselesaikan!\nNilai: ${nilai}`);
   };
 
   const getMyRole = (sch) => {
@@ -143,7 +173,7 @@ export default function PengujiDashboardPage() {
                             className="text-xs font-bold text-white bg-rose-600 px-4 py-2 rounded-xl shadow-sm hover:bg-rose-700 transition-colors w-full flex items-center justify-center gap-1.5"
                           >
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            Selesaikan & Nilai
+                            Selesaikan Ujian
                           </button>
                         </td>
                       </tr>
@@ -173,10 +203,13 @@ function NilaiModal({ modal, onClose, onSubmit }) {
   const sch = modal.sch;
   const student = SidanusDB.getStudent(sch.nim);
 
+  const isScoredExam = sch.jenisUjian !== 'proposal';
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!window.confirm(`Konfirmasi: Selesaikan ujian ${SidanusDB.getExamLabel(sch.jenisUjian)} untuk ${student?.nama} dengan nilai ${nilai}?`)) return;
-    onSubmit(sch, { nilai, catatan, perluRevisi: false });
+    const actionLabel = isScoredExam ? `Selesaikan ujian dengan nilai ${nilai}?` : `Selesaikan ujian ini?`;
+    if (!window.confirm(`Konfirmasi: ${actionLabel}`)) return;
+    onSubmit(sch, { nilai: isScoredExam ? nilai : null, catatan });
     setNilai('A');
     setCatatan('');
   };
@@ -209,26 +242,28 @@ function NilaiModal({ modal, onClose, onSubmit }) {
             <p className="text-xs text-slate-500 italic mt-0.5 line-clamp-2">"{student?.judul}"</p>
           </div>
 
-          {/* Pilih Nilai */}
-          <div>
-            <label className="block text-sm font-bold text-slate-700 mb-3">Nilai Akhir Ujian</label>
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-              {nilaiOptions.map(opt => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setNilai(opt.value)}
-                  className={`py-3 rounded-xl text-sm font-extrabold border-2 transition-all ${nilai === opt.value
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700 scale-105 shadow-md'
-                    : 'border-slate-200 text-slate-500 hover:border-slate-300'
-                  }`}
-                >
-                  {opt.value}
-                </button>
-              ))}
+          {/* Pilih Nilai (Hanya untuk non-proposal) */}
+          {isScoredExam && (
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-3">Nilai Akhir Ujian</label>
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                {nilaiOptions.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setNilai(opt.value)}
+                    className={`py-3 rounded-xl text-sm font-extrabold border-2 transition-all ${nilai === opt.value
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700 scale-105 shadow-md'
+                      : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                    }`}
+                  >
+                    {opt.value}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-slate-400 mt-2">{nilaiOptions.find(o => o.value === nilai)?.label}</p>
             </div>
-            <p className="text-xs text-slate-400 mt-2">{nilaiOptions.find(o => o.value === nilai)?.label}</p>
-          </div>
+          )}
 
           {/* Catatan */}
           <div>
@@ -239,6 +274,7 @@ function NilaiModal({ modal, onClose, onSubmit }) {
               onChange={e => setCatatan(e.target.value)}
               placeholder="Contoh: Mahasiswa perlu memperbaiki bab 3 metodologi penelitian..."
               className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-rose-400"
+              required
             />
           </div>
 
@@ -249,7 +285,7 @@ function NilaiModal({ modal, onClose, onSubmit }) {
             </button>
             <button type="submit" className="flex-1 bg-rose-600 text-white font-bold py-3 rounded-xl text-sm hover:bg-rose-700 transition-colors flex items-center justify-center gap-2">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              Selesaikan Ujian
+              Simpan & Selesaikan
             </button>
           </div>
         </form>

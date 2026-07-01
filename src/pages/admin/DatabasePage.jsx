@@ -10,6 +10,8 @@ export default function DatabasePage() {
   const [studentsList, setStudentsList] = useState([]);
   
   const [modal, setModal] = useState({ open: false, type: '', mode: 'add', data: null });
+  const [selectedP1, setSelectedP1] = useState('');
+  const [selectedP2, setSelectedP2] = useState('');
 
   const loadData = () => {
     setDosenList(SidanusDB.getDosenList());
@@ -23,6 +25,8 @@ export default function DatabasePage() {
 
   const openModal = (type, mode, data = null) => {
     setModal({ open: true, type, mode, data });
+    setSelectedP1(data?.pembimbing1 || '');
+    setSelectedP2(data?.pembimbing2 || '');
   };
   const closeModal = () => {
     setModal({ open: false, type: '', mode: 'add', data: null });
@@ -50,6 +54,11 @@ export default function DatabasePage() {
       if (modal.mode === 'add') SidanusDB.addRuangan(data);
       else SidanusDB.updateRuangan(modal.data.id, data);
     } else if (modal.type === 'mahasiswa') {
+      if (data.pembimbing1 && data.pembimbing2 && data.pembimbing1 === data.pembimbing2) {
+        alert('⚠️ Validasi Gagal: Pembimbing 1 dan Pembimbing 2 tidak boleh orang yang sama.');
+        return;
+      }
+
       if (modal.mode === 'add') {
         const success = SidanusDB.addStudent(data);
         if (!success) {
@@ -272,16 +281,16 @@ export default function DatabasePage() {
                   </div>
                   <div className="col-span-2">
                     <label className="block text-xs font-semibold text-slate-500 mb-1">Pembimbing 1</label>
-                    <select name="pembimbing1" required defaultValue={modal.data?.pembimbing1 || ''} className="input-style">
+                    <select name="pembimbing1" required value={selectedP1} onChange={e => setSelectedP1(e.target.value)} className="input-style">
                       <option value="">-- Pilih --</option>
-                      {dosenList.map(d => <option key={d.id} value={d.nama}>{d.nama}</option>)}
+                      {dosenList.filter(d => d.nama !== selectedP2).map(d => <option key={d.id} value={d.nama}>{d.nama}</option>)}
                     </select>
                   </div>
                   <div className="col-span-2">
                     <label className="block text-xs font-semibold text-slate-500 mb-1">Pembimbing 2</label>
-                    <select name="pembimbing2" required defaultValue={modal.data?.pembimbing2 || ''} className="input-style">
+                    <select name="pembimbing2" required value={selectedP2} onChange={e => setSelectedP2(e.target.value)} className="input-style">
                       <option value="">-- Pilih --</option>
-                      {dosenList.map(d => <option key={d.id} value={d.nama}>{d.nama}</option>)}
+                      {dosenList.filter(d => d.nama !== selectedP1).map(d => <option key={d.id} value={d.nama}>{d.nama}</option>)}
                     </select>
                   </div>
                 </div>

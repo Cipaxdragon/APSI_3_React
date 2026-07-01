@@ -52,7 +52,25 @@ export default function PenjadwalanPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedReg) return alert('Pilih mahasiswa terlebih dahulu');
+    if (!selectedRegId) return;
+
+    // Validasi tidak ada dosen penguji/pembimbing yang ganda
+    const selectedDosen = [
+      formData.ketuaSidang, 
+      formData.sekretaris, 
+      formData.penguji1, 
+      formData.penguji2
+    ].filter(Boolean); // filter out empty strings if any
+    
+    const uniqueDosen = new Set(selectedDosen);
+    if (uniqueDosen.size < selectedDosen.length) {
+      alert("⚠️ Validasi Gagal: Dosen penguji dan pembimbing tidak boleh ada yang merangkap jabatan atau dipilih lebih dari satu kali dalam satu ujian yang sama.");
+      return;
+    }
+
+    const reg = SidanusDB.getRegistration(selectedRegId);
+    if (!reg) return;
+    
     if (!formData.tanggal || !formData.jamMulai || !formData.jamSelesai) return alert('Lengkapi tanggal dan waktu ujian');
     if (!formData.ruangan) return alert('Pilih ruangan ujian');
     if (!formData.penguji1 || !formData.penguji2) return alert('Lengkapi nama Penguji 1 dan Penguji 2');
@@ -220,6 +238,15 @@ export default function PenjadwalanPage() {
                   {/* Ketua & Sekretaris dropdown */}
                   {['ketuaSidang', 'sekretaris', 'penguji1', 'penguji2'].map((key) => {
                     const labels = { ketuaSidang: 'Ketua Sidang / Pembimbing 1', sekretaris: 'Sekretaris / Pembimbing 2', penguji1: 'Penguji 1', penguji2: 'Penguji 2' };
+                    
+                    // Filter list dosen agar tidak menampilkan dosen yang sudah dipilih di form lain
+                    const availableDosen = dosenList.filter(d => {
+                      const otherSelected = ['ketuaSidang', 'sekretaris', 'penguji1', 'penguji2']
+                        .filter(k => k !== key)
+                        .map(k => formData[k]);
+                      return !otherSelected.includes(d.nama);
+                    });
+
                     return (
                       <div key={key}>
                         <label className="block text-xs font-semibold text-slate-500 mb-1">{labels[key]}</label>
@@ -231,7 +258,7 @@ export default function PenjadwalanPage() {
                           className="input-style w-full disabled:bg-slate-50"
                         >
                           <option value="">-- Pilih Dosen --</option>
-                          {dosenList.map(d => (
+                          {availableDosen.map(d => (
                             <option key={d.id} value={d.nama}>{d.nama} ({d.jabatan})</option>
                           ))}
                         </select>
